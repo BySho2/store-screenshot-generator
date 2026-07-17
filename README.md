@@ -10,6 +10,12 @@ The generator combines each app screenshot with localized headlines, supporting 
 
 See [examples/torekanri](examples/torekanri) for store listing images generated from screenshots of the real Torekanri app.
 
+<p>
+  <img src="examples/torekanri/generated/app-store/en/torekanri_en_01.png" width="31%" alt="See Trades and Profit on Your Calendar">
+  <img src="examples/torekanri/generated/app-store/en/torekanri_en_02.png" width="31%" alt="Log Purchases and Sales with Ease">
+  <img src="examples/torekanri/generated/app-store/en/torekanri_en_03.png" width="31%" alt="See Profit and Inventory at a Glance">
+</p>
+
 - [App Store, Japanese](examples/torekanri/generated/app-store/ja/torekanri_ja_01.png)
 - [Google Play, Japanese](examples/torekanri/generated/google-play/ja/torekanri_ja_01.png)
 - Configuration: [examples/torekanri/config.yaml](examples/torekanri/config.yaml)

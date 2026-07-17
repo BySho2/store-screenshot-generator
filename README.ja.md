@@ -10,6 +10,12 @@
 
 実際のアプリ「トレカンリ」のスクリーンショットから生成した例を、[examples/torekanri](examples/torekanri)に掲載しています。
 
+<p>
+  <img src="examples/torekanri/generated/app-store/ja/torekanri_ja_01.png" width="31%" alt="取引と収支をカレンダーで確認">
+  <img src="examples/torekanri/generated/app-store/ja/torekanri_ja_02.png" width="31%" alt="仕入も売却もかんたんに記録">
+  <img src="examples/torekanri/generated/app-store/ja/torekanri_ja_03.png" width="31%" alt="収支と在庫をまとめて見える化">
+</p>
+
 - [App Store向け・日本語](examples/torekanri/generated/app-store/ja/torekanri_ja_01.png)
 - [Google Play向け・日本語](examples/torekanri/generated/google-play/ja/torekanri_ja_01.png)
 - 設定内容：[examples/torekanri/config.yaml](examples/torekanri/config.yaml)
