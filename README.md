@@ -12,6 +12,29 @@
 
 アプリ画面に見出しや説明文、背景デザインを組み合わせ、日本語版と英語版をまとめて生成できます。デザインや文章はYAMLファイルで変更できるため、アプリごとにPythonコードを書き換える必要はありません。
 
+## AIエージェントで使う
+
+このリポジトリには、アプリの調査、撮影画面の選定、iOS Simulator／Android Emulatorからの撮影、日本語・英語コピーの作成、画像生成、最終確認までを進めるCodex Skillが含まれています。
+
+1. このリポジトリをcloneする
+2. Codexでこのリポジトリを開く
+3. 対象アプリのリポジトリを読み取れる場所に用意する
+4. 次のように依頼する
+
+```text
+store-listing-screenshots Skillを使って、
+/path/to/my-app のApp Store／Google Play向け掲載画像を作成してください。
+掲載に適した画面を選び、日本語版と英語版を生成してください。
+```
+
+Codexは[Skillの手順](.agents/skills/store-listing-screenshots/SKILL.md)に沿って作業します。自動撮影には、対象プラットフォームの開発環境が必要です。
+
+- iOS：macOS、Xcode、起動可能なiOS Simulator
+- Android：Android SDK Platform Tools、接続済みのEmulatorまたは端末
+- 共通：Python 3.10以上、ビルド可能な対象アプリ、安全なテストデータ
+
+ログイン、署名、実機専用機能などにより自動撮影できない場合は、利用者が用意したスクリーンショットから生成する方式へ切り替えます。このSkillは掲載画像を生成しますが、App Store ConnectやGoogle Play Consoleへのアップロード・公開は行いません。
+
 ## 生成例
 
 実際のアプリ「トレカンリ」のスクリーンショットから生成した例を、[examples/torekanri](examples/torekanri)に掲載しています。
@@ -127,7 +150,14 @@ slides:
 python -m unittest discover -s tests -v
 ```
 
-生成前に、入力画像、言語ごとの文章、フォント、色、出力形式、既存ファイルの有無などを検証します。
+生成前に、入力画像、言語ごとの文章、フォント、色、出力形式、既存ファイルの有無などを検証します。Skillのパッケージ構成と生成後の画像検証もテスト対象です。
+
+生成済み画像だけを再検証する場合は、次のコマンドを使用できます。
+
+```bash
+python .agents/skills/store-listing-screenshots/scripts/validate_outputs.py \
+  --config path/to/config.yaml
+```
 
 ## ストアの画像仕様
 

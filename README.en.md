@@ -12,6 +12,29 @@ Generate App Store and Google Play listing images from screenshots of your app.
 
 The generator combines each app screenshot with localized headlines, supporting copy, and a customizable background. Content and visual settings live in YAML files, so you can reuse the same generator without editing the Python source for every app.
 
+## Use with an AI Agent
+
+This repository includes a Codex Skill that guides app inspection, screen selection, capture from an iOS Simulator or Android emulator, Japanese and English copywriting, image generation, and final QA.
+
+1. Clone this repository.
+2. Open this repository in Codex.
+3. Keep the target app repository in a location Codex can read.
+4. Use a prompt like this:
+
+```text
+Use the store-listing-screenshots Skill to create App Store and Google Play
+listing images for /path/to/my-app. Select suitable screens and generate
+Japanese and English versions.
+```
+
+Codex follows the [Skill workflow](.agents/skills/store-listing-screenshots/SKILL.md). Automated capture requires the relevant development environment:
+
+- iOS: macOS, Xcode, and a bootable iOS Simulator
+- Android: Android SDK Platform Tools and a connected emulator or device
+- Shared: Python 3.10 or later, a buildable target app, and safe sample data
+
+If login, signing, hardware-only features, or another dependency prevents automated capture, the workflow switches to screenshots supplied by the user. The Skill generates listing images; it does not upload or publish them through App Store Connect or Google Play Console.
+
 ## Generated Example
 
 See [examples/torekanri](examples/torekanri) for store listing images generated from screenshots of the real Torekanri app.
@@ -109,6 +132,13 @@ python -m unittest discover -s tests -v
 ```
 
 Before rendering, the generator validates source images, localized copy, fonts, colors, output presets, and existing files.
+
+The test suite also covers the Skill package and post-generation image validator. To validate an existing output set again, run:
+
+```bash
+python .agents/skills/store-listing-screenshots/scripts/validate_outputs.py \
+  --config path/to/config.yaml
+```
 
 ## Store Image Requirements
 
