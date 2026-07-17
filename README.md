@@ -1,20 +1,24 @@
-# App Store Screenshot Generator
+# Store Screenshot Generator
 
 [日本語](README.ja.md)
 
-Generate customizable, localized App Store screenshots from real app captures.
+Generate App Store and Google Play listing images from screenshots of your app.
 
-The initial release supports:
+The generator combines each app screenshot with localized headlines, supporting copy, and a customizable background. Content and visual settings live in YAML files, so you can reuse the same generator without editing the Python source for every app.
+
+## Supported Output
 
 - Japanese and English
-- App Store iPhone 6.5-inch portrait output (`1242 x 2688`)
-- YAML-based content and design configuration
-- Automatic text fitting, including Japanese text without spaces
+- App Store: iPhone 6.9-inch portrait (`1320 x 2868`)
+- Google Play: phone portrait (`1080 x 1920`)
+- Apple and Google Play outputs generated in one run
+- YAML configuration for copy, source screenshots, and visual themes
+- Automatic Japanese and English line wrapping and text sizing
 - PNG, JPEG, and WebP source images
 - RGB PNG output without alpha channels
-- Safe overwrite behavior
+- Protection against accidental overwrites
 
-## Quick Start
+## Generate the Sample
 
 ```bash
 python3 -m venv .venv
@@ -26,53 +30,62 @@ cp config.example.yaml config.yaml
 python generate.py --config config.yaml
 ```
 
-Generated files are written to `output/ja` and `output/en`.
+Japanese and English images are generated for both stores:
 
-To replace existing outputs intentionally:
+```text
+output/
+├── app-store/
+│   ├── ja/
+│   └── en/
+└── google-play/
+    ├── ja/
+    └── en/
+```
+
+Use `--overwrite` only when you intend to replace existing generated images.
 
 ```bash
 python generate.py --config config.yaml --overwrite
 ```
 
-## Use Your Own App
+## Use It with Your App
 
-1. Put your captures in a private local folder.
+1. Capture the app screens you want to use in your store listing.
 2. Copy `config.example.yaml` to `config.yaml`.
-3. Replace each slide's screenshot path and localized text.
-4. Select or customize a theme.
-5. Run the generator and visually inspect every output.
+3. Set each screenshot path and its Japanese and English copy in `config.yaml`.
+4. Choose a theme and adjust it to match your app's brand when needed.
+5. Run the generator.
+6. Review every generated image for clipping, accuracy, and display order.
 
-`config.yaml`, `output/`, and your private app captures should not be committed unless you have the right to publish them.
+Your real app screenshots and `config.yaml` may contain private or unreleased information. Keep them in your own environment instead of committing them to this public repository.
 
-## Themes
+## Customize the Design
 
-Included themes:
+Two themes are included:
 
 - `themes/premium-navy.yaml`
 - `themes/minimal-light.yaml`
 
-See [Custom Themes](docs/custom-themes.md).
+You can change background colors, typography, accent colors, screenshot size, shadows, and other visual settings in YAML. See [Custom Themes](docs/custom-themes.md).
 
-## How It Works
+## How Images Are Generated
 
-See [How It Works](docs/how-it-works.md) for the generation pipeline and input requirements.
+See [How It Works](docs/how-it-works.md) for the complete pipeline from an app screenshot to store listing images.
 
-## Validation
+## Tests
 
 ```bash
 python -m unittest discover -s tests -v
 ```
 
-The generator validates missing screenshots, unsupported locales and formats, missing copy, unavailable fonts, invalid colors, output presets, and accidental overwrites.
+Before rendering, the generator validates source images, localized copy, fonts, colors, output presets, and existing files.
 
-## Store Requirements
+## Store Image Requirements
 
-Store specifications can change. Verify generated files against the current official requirements before upload:
+Store requirements can change. Check the latest official specifications before uploading generated images.
 
 - [Apple screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/)
 - [Google Play preview asset requirements](https://support.google.com/googleplay/android-developer/answer/9866151)
-
-This initial release does not claim Google Play output support.
 
 ## License
 
