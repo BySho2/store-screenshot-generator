@@ -1,0 +1,28 @@
+name: Premium Navy
+background:
+  type: gradient
+  colors:
+    - "#09122A"
+    - "#19224F"
+    - "#070A18"
+  accent_glow: "#5B83FF"
+headline:
+  color: "#F8F9FF"
+  max_size: 116
+  min_size: 60
+  max_lines: 3
+body:
+  color: "#D4DBF5"
+  max_size: 42
+  min_size: 24
+accent:
+  enabled: true
+  color: "#FFCC71"
+device:
+  max_width_ratio: 0.82
+  max_height_ratio: 0.59
+  shadow: true
+panel:
+  enabled: true
+  color: "#FFFFFF"
+  opacity: 14

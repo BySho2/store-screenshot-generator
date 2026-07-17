@@ -1,0 +1,27 @@
+name: Minimal Light
+background:
+  type: gradient
+  colors:
+    - "#FFFFFF"
+    - "#F2F5F9"
+  accent_glow: "#DCE8FF"
+headline:
+  color: "#101828"
+  max_size: 112
+  min_size: 58
+  max_lines: 3
+body:
+  color: "#475467"
+  max_size: 40
+  min_size: 24
+accent:
+  enabled: true
+  color: "#2563EB"
+device:
+  max_width_ratio: 0.82
+  max_height_ratio: 0.59
+  shadow: true
+panel:
+  enabled: true
+  color: "#FFFFFF"
+  opacity: 150

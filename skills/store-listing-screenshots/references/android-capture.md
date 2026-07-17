@@ -13,7 +13,7 @@
 2. Build, install, and launch the app on the selected emulator or device.
 3. Set a consistent appearance, locale, status bar state, and orientation.
 4. Navigate to the planned screen and wait for the UI to settle.
-5. Capture with `scripts/capture_android.sh`.
+5. Capture with `python "$SKILL_DIR/scripts/capture_android.py" <output.png> [device-serial]`.
 6. Inspect the PNG immediately and recapture if the state is wrong.
 
 The helper uses `adb exec-out screencap -p`. It does not build, install, seed, launch, or navigate the app.

@@ -92,6 +92,18 @@ def run(config_path: Path) -> int:
     files = expected_files(config_path, config)
     for path, expected_size in files:
         validate_image(path, expected_size)
+    expected_paths = {path.resolve() for path, _ in files}
+    output_directories = {path.parents[1].resolve() for path, _ in files}
+    actual_paths = {
+        path.resolve()
+        for directory in output_directories
+        if directory.is_dir()
+        for path in directory.rglob("*.png")
+    }
+    unexpected = sorted(actual_paths - expected_paths)
+    if unexpected:
+        details = "\n".join(f"- {path}" for path in unexpected)
+        raise ValidationError(f"Unexpected PNG files found in output directories:\n{details}")
     print(f"Validated {len(files)} generated PNG files from {config_path}")
     return len(files)
 

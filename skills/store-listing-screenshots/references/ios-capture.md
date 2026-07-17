@@ -14,7 +14,7 @@
 3. Set a consistent appearance, locale, status bar state, and orientation.
 4. Launch the app and navigate to the planned screen.
 5. Wait for animations, network activity, and transient messages to finish.
-6. Capture with `scripts/capture_ios.sh`.
+6. Capture with `python "$SKILL_DIR/scripts/capture_ios.py" <output.png> [device]`.
 7. Inspect the PNG immediately and recapture if the state is wrong.
 
 The helper uses `xcrun simctl io <device> screenshot`. It does not build, install, seed, launch, or navigate the app.

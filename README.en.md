@@ -14,20 +14,45 @@ The generator combines each app screenshot with localized headlines, supporting 
 
 ## Use with an AI Agent
 
-This repository includes a Codex Skill that guides app inspection, screen selection, capture from an iOS Simulator or Android emulator, Japanese and English copywriting, image generation, and final QA.
+This repository includes a self-contained Agent Skill for both Codex and Claude Code. It guides app inspection, screen selection, capture from an iOS Simulator or Android emulator, Japanese and English copywriting, image generation, and final QA.
 
-1. Clone this repository.
-2. Open this repository in Codex.
-3. Keep the target app repository in a location Codex can read.
-4. Use a prompt like this:
+### Install
+
+Install the complete [Skill directory](skills/store-listing-screenshots) in your agent's personal skills directory:
 
 ```text
-Use the store-listing-screenshots Skill to create App Store and Google Play
-listing images for /path/to/my-app. Select suitable screens and generate
-Japanese and English versions.
+Codex:       ~/.agents/skills/store-listing-screenshots/
+Claude Code: ~/.claude/skills/store-listing-screenshots/
 ```
 
-Codex follows the [Skill workflow](.agents/skills/store-listing-screenshots/SKILL.md). Automated capture requires the relevant development environment:
+Install the whole directory, including `SKILL.md`, `scripts`, `assets`, `references`, and `requirements.txt`. See the [installation guide](skills/store-listing-screenshots/references/installation.md) for details.
+
+With Codex, you can also ask `$skill-installer` to install this Skill directory:
+
+```text
+https://github.com/BySho2/store-screenshot-generator/tree/main/skills/store-listing-screenshots
+```
+
+### Run
+
+After installation, open the app repository that needs store images. You do not need to open the generator repository.
+
+Codex:
+
+```text
+Use $store-listing-screenshots to create App Store and Google Play listing
+images for this app. Select suitable screens and generate Japanese and English versions.
+```
+
+Claude Code:
+
+```text
+/store-listing-screenshots
+Create App Store and Google Play listing images for this app. Select suitable
+screens and generate Japanese and English versions.
+```
+
+The agent follows the [shared Skill workflow](skills/store-listing-screenshots/SKILL.md). Automated capture requires the relevant development environment:
 
 - iOS: macOS, Xcode, and a bootable iOS Simulator
 - Android: Android SDK Platform Tools and a connected emulator or device
@@ -47,7 +72,7 @@ See [examples/torekanri](examples/torekanri) for store listing images generated 
 
 - [App Store, Japanese](examples/torekanri/generated/app-store/ja/torekanri_ja_01.png)
 - [Google Play, Japanese](examples/torekanri/generated/google-play/ja/torekanri_ja_01.png)
-- Configuration: [examples/torekanri/config.yaml](examples/torekanri/config.yaml)
+- Configuration: [examples/torekanri/config.example.yaml](examples/torekanri/config.example.yaml)
 
 ## Supported Output
 
@@ -136,7 +161,7 @@ Before rendering, the generator validates source images, localized copy, fonts, 
 The test suite also covers the Skill package and post-generation image validator. To validate an existing output set again, run:
 
 ```bash
-python .agents/skills/store-listing-screenshots/scripts/validate_outputs.py \
+python skills/store-listing-screenshots/scripts/validate_outputs.py \
   --config path/to/config.yaml
 ```
 
