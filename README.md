@@ -1,38 +1,44 @@
 # Store Screenshot Generator
 
-[日本語](README.ja.md)
+[English](README.en.md)
 
-Generate App Store and Google Play listing images from screenshots of your app.
+![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
+![App Store](https://img.shields.io/badge/App%20Store-supported-0D96F6?logo=apple&logoColor=white)
+![Google Play](https://img.shields.io/badge/Google%20Play-supported-34A853?logo=googleplay&logoColor=white)
+[![Tests](https://github.com/BySho2/store-screenshot-generator/actions/workflows/tests.yml/badge.svg)](https://github.com/BySho2/store-screenshot-generator/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-The generator combines each app screenshot with localized headlines, supporting copy, and a customizable background. Content and visual settings live in YAML files, so you can reuse the same generator without editing the Python source for every app.
+アプリ画面のスクリーンショットから、App Store／Google Playのストア掲載用画像を生成するPythonツールです。
 
-## Generated Example
+アプリ画面に見出しや説明文、背景デザインを組み合わせ、日本語版と英語版をまとめて生成できます。デザインや文章はYAMLファイルで変更できるため、アプリごとにPythonコードを書き換える必要はありません。
 
-See [examples/torekanri](examples/torekanri) for store listing images generated from screenshots of the real Torekanri app.
+## 生成例
+
+実際のアプリ「トレカンリ」のスクリーンショットから生成した例を、[examples/torekanri](examples/torekanri)に掲載しています。
 
 <p>
-  <img src="examples/torekanri/generated/app-store/en/torekanri_en_01.png" width="31%" alt="See Trades and Profit on Your Calendar">
-  <img src="examples/torekanri/generated/app-store/en/torekanri_en_02.png" width="31%" alt="Log Purchases and Sales with Ease">
-  <img src="examples/torekanri/generated/app-store/en/torekanri_en_03.png" width="31%" alt="See Profit and Inventory at a Glance">
+  <img src="examples/torekanri/generated/app-store/ja/torekanri_ja_01.png" width="31%" alt="取引と収支をカレンダーで確認">
+  <img src="examples/torekanri/generated/app-store/ja/torekanri_ja_02.png" width="31%" alt="仕入も売却もかんたんに記録">
+  <img src="examples/torekanri/generated/app-store/ja/torekanri_ja_03.png" width="31%" alt="収支と在庫をまとめて見える化">
 </p>
 
-- [App Store, Japanese](examples/torekanri/generated/app-store/ja/torekanri_ja_01.png)
-- [Google Play, Japanese](examples/torekanri/generated/google-play/ja/torekanri_ja_01.png)
-- Configuration: [examples/torekanri/config.yaml](examples/torekanri/config.yaml)
+- [App Store向け・日本語](examples/torekanri/generated/app-store/ja/torekanri_ja_01.png)
+- [Google Play向け・日本語](examples/torekanri/generated/google-play/ja/torekanri_ja_01.png)
+- 設定内容：[examples/torekanri/config.yaml](examples/torekanri/config.yaml)
 
-## Supported Output
+## 対応内容
 
-- Japanese and English
-- App Store: iPhone 6.9-inch portrait (`1320 x 2868`)
-- Google Play: phone portrait (`1080 x 1920`)
-- Apple and Google Play outputs generated in one run
-- YAML configuration for copy, source screenshots, and visual themes
-- Automatic Japanese and English line wrapping and text sizing
-- PNG, JPEG, and WebP source images
-- RGB PNG output without alpha channels
-- Protection against accidental overwrites
+- 日本語・英語
+- App Store向け：iPhone 6.9インチ縦向き（`1320 x 2868`）
+- Google Play向け：スマートフォン縦向き（`1080 x 1920`）
+- Apple／Google Play向け画像の一括生成
+- YAMLによる見出し、説明文、入力画像、デザインの設定
+- 日本語と英語の自動改行・文字サイズ調整
+- PNG、JPEG、WebP形式の入力
+- アルファチャンネルを含まないRGB PNG形式での出力
+- 既存ファイルの意図しない上書き防止
 
-## Generate the Sample
+## まずサンプルを生成する
 
 ```bash
 python3 -m venv .venv
@@ -44,7 +50,7 @@ cp config.example.yaml config.yaml
 python generate.py --config config.yaml
 ```
 
-Japanese and English images are generated for both stores:
+以下のフォルダに、日本語版と英語版が生成されます。
 
 ```text
 output/
@@ -56,61 +62,80 @@ output/
     └── en/
 ```
 
-Use `--overwrite` only when you intend to replace existing generated images.
+既存の生成画像を置き換える場合は、`--overwrite`を付けて実行します。
 
 ```bash
 python generate.py --config config.yaml --overwrite
 ```
 
-## Use It with Your App
+## 自分のアプリで使う
 
-1. Capture the app screens you want to use in your store listing.
-2. Copy `config.example.yaml` to `config.yaml`.
-3. Set each screenshot path and its Japanese and English copy in `config.yaml`.
-4. Choose a theme and adjust it to match your app's brand when needed.
-5. Run the generator.
-6. Review every generated image for clipping, accuracy, and display order.
+1. ストア掲載に使いたいアプリ画面のスクリーンショットを撮影する
+2. `config.example.yaml`を`config.yaml`という名前でコピーする
+3. `config.yaml`にスクリーンショットのパスと日本語・英語の文章を設定する
+4. 使用するテーマを選ぶ。必要に応じてアプリのブランドカラーに変更する
+5. 生成コマンドを実行する
+6. 生成されたすべての画像について、文字切れ、内容、掲載順を確認する
 
-Your real app screenshots and `config.yaml` may contain private or unreleased information. Keep them in your own environment instead of committing them to this public repository.
+ストア掲載に使う実際のスクリーンショットや`config.yaml`には、未公開情報や個人情報が含まれる場合があります。このPublicリポジトリへコミットせず、利用者自身の環境で管理してください。
 
-The app name can also be localized:
+## 設定例
 
 ```yaml
 app:
   name:
     ja: サンプルアプリ
     en: Sample App
+
+outputs:
+  - name: app-store
+    preset: app-store-iphone-6.9
+    directory: ./output/app-store
+
+  - name: google-play
+    preset: google-play-phone-portrait
+    directory: ./output/google-play
+
+slides:
+  - screenshot: ./screenshots/home.png
+    text:
+      ja:
+        title: "毎日のタスクを\nひとつの画面で"
+        body: "必要な情報をすばやく確認できます。"
+      en:
+        title: "Your Daily Tasks\nin One Place"
+        body: "See the information you need at a glance."
 ```
 
-## Customize the Design
+## デザインを変更する
 
-Two themes are included:
+次のテーマが付属しています。
 
 - `themes/premium-navy.yaml`
 - `themes/minimal-light.yaml`
 - `themes/sunny-yellow.yaml`
 
-You can change background colors, typography, accent colors, screenshot size, shadows, and other visual settings in YAML. See [Custom Themes](docs/custom-themes.md).
+背景色、文字色、文字サイズ、アクセントカラー、スクリーンショットの大きさ、影などをYAMLで変更できます。詳しくは[テーマのカスタマイズ方法](docs/custom-themes.md)をご覧ください。
 
-## How Images Are Generated
+## 画像生成の仕組み
 
-See [How It Works](docs/how-it-works.md) for the complete pipeline from an app screenshot to store listing images.
+[画像生成の仕組み](docs/how-it-works.md)で、入力したスクリーンショットからストア掲載用画像を生成するまでの処理を説明しています。
 
-## Tests
+## テスト
 
 ```bash
 python -m unittest discover -s tests -v
 ```
 
-Before rendering, the generator validates source images, localized copy, fonts, colors, output presets, and existing files.
+生成前に、入力画像、言語ごとの文章、フォント、色、出力形式、既存ファイルの有無などを検証します。
 
-## Store Image Requirements
+## ストアの画像仕様
 
-Store requirements can change. Check the latest official specifications before uploading generated images.
+ストアの画像仕様は変更される可能性があります。実際にアップロードする前に、最新の公式仕様を確認してください。
 
-- [Apple screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/)
-- [Google Play preview asset requirements](https://support.google.com/googleplay/android-developer/answer/9866151)
+- [Apple公式スクリーンショット仕様](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/)
+- [Google Play公式プレビュー素材要件](https://support.google.com/googleplay/android-developer/answer/9866151)
 
-## License
+## ライセンス
 
-[MIT](LICENSE)
+このプロジェクトは[MIT License](LICENSE)で公開しています。ライセンスの条件に従って、商用・非商用を問わず利用、改変、再配布できます。
