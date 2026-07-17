@@ -363,9 +363,13 @@ def render(
     phone_y = panel_top + max((panel_bottom - panel_top - rendered.height) // 2, 0)
     image.alpha_composite(rendered, (phone_x, phone_y))
 
-    app_name = str(config.get("app", {}).get("name", "")).strip()
+    app_name_value = config.get("app", {}).get("name", "")
+    if isinstance(app_name_value, dict):
+        app_name = str(app_name_value.get(locale, "")).strip()
+    else:
+        app_name = str(app_name_value).strip()
     if app_name:
-        footer_font = ImageFont.truetype(str(resolve_font(config, font_base, "en", "body")), size=24)
+        footer_font = ImageFont.truetype(str(resolve_font(config, font_base, locale, "body")), size=24)
         footer_box = draw.textbbox((0, 0), app_name, font=footer_font)
         draw.text(
             (width - margin - (footer_box[2] - footer_box[0]), height - round(height * 0.052)),

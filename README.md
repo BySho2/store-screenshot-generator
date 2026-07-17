@@ -6,6 +6,14 @@ Generate App Store and Google Play listing images from screenshots of your app.
 
 The generator combines each app screenshot with localized headlines, supporting copy, and a customizable background. Content and visual settings live in YAML files, so you can reuse the same generator without editing the Python source for every app.
 
+## Generated Example
+
+See [examples/torekanri](examples/torekanri) for store listing images generated from screenshots of the real Torekanri app.
+
+- [App Store, Japanese](examples/torekanri/generated/app-store/ja/torekanri_ja_01.png)
+- [Google Play, Japanese](examples/torekanri/generated/google-play/ja/torekanri_ja_01.png)
+- Configuration: [examples/torekanri/config.yaml](examples/torekanri/config.yaml)
+
 ## Supported Output
 
 - Japanese and English
@@ -59,12 +67,22 @@ python generate.py --config config.yaml --overwrite
 
 Your real app screenshots and `config.yaml` may contain private or unreleased information. Keep them in your own environment instead of committing them to this public repository.
 
+The app name can also be localized:
+
+```yaml
+app:
+  name:
+    ja: サンプルアプリ
+    en: Sample App
+```
+
 ## Customize the Design
 
 Two themes are included:
 
 - `themes/premium-navy.yaml`
 - `themes/minimal-light.yaml`
+- `themes/sunny-yellow.yaml`
 
 You can change background colors, typography, accent colors, screenshot size, shadows, and other visual settings in YAML. See [Custom Themes](docs/custom-themes.md).
 
