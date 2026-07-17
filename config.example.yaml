@@ -1,0 +1,40 @@
+app:
+  name: Demo App
+
+locales:
+  - ja
+  - en
+
+output:
+  preset: app-store-iphone-6.5
+  directory: ./output
+  filename: screenshot_{locale}_{index:02d}.png
+
+theme: ./themes/premium-navy.yaml
+
+fonts:
+  ja:
+    title: null
+    body: null
+  en:
+    title: null
+    body: null
+
+slides:
+  - screenshot: ./examples/screenshots/home.png
+    text:
+      ja:
+        title: "毎日のタスクを\nひとつの画面で"
+        body: "必要な情報をすばやく確認し、次の行動へ進めます。"
+      en:
+        title: "Your Daily Tasks\nin One Place"
+        body: "See what matters and move to your next action quickly."
+
+  - screenshot: ./examples/screenshots/detail.png
+    text:
+      ja:
+        title: "大切な情報を\n迷わず整理"
+        body: "シンプルな操作で、必要な内容を分かりやすく管理できます。"
+      en:
+        title: "Keep Important Details\nOrganized"
+        body: "Manage the information you need with a clear, simple workflow."
