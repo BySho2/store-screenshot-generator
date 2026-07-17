@@ -1,0 +1,8 @@
+interface:
+  display_name: "Store Listing Screenshots"
+  short_description: "Capture app screens and generate store listing images"
+  brand_color: "#F5A700"
+  default_prompt: "Use this skill to inspect my app, capture suitable screens, and generate Japanese and English App Store and Google Play listing images."
+
+policy:
+  allow_implicit_invocation: true
