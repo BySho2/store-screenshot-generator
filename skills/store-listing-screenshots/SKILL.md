@@ -5,17 +5,17 @@ description: Inspect a mobile app, capture suitable screens from an iOS Simulato
 
 # Store Listing Screenshots
 
-Create store listing images from a runnable mobile app or from screenshots supplied by the user. Treat the repository containing this skill as the generator repository and the user's app repository as the target app.
+Create store listing images from a runnable mobile app or from screenshots supplied by the user. Run this workflow from the target app repository. The skill directory contains the generator, themes, dependencies, capture helpers, and validation tools required by the workflow.
 
 ## Resolve paths
 
 1. Resolve this `SKILL.md` to an absolute path.
-2. Set `SKILL_DIR` to its containing directory.
-3. Set `GENERATOR_ROOT` to `SKILL_DIR/../../..`.
-4. Resolve and confirm the target app repository separately. Never write generated artifacts into the target app unless the user requests it.
-5. Create a dedicated working directory for the run outside tracked source folders when possible.
+2. Set `SKILL_DIR` to its containing directory. Do not infer tool paths from the current working directory.
+3. Resolve the current target app repository and confirm its platform before acting.
+4. Create a dedicated `store-listing-assets` working directory in the target app repository unless the user specifies another output location.
+5. Keep source captures, the run configuration, generated images, and QA artifacts inside that working directory.
 
-The generator entry point is `GENERATOR_ROOT/generate.py`. Supporting scripts are in `SKILL_DIR/scripts`.
+The generator entry point is `SKILL_DIR/scripts/generate.py`. Supporting scripts, dependencies, configuration templates, and themes are all relative to `SKILL_DIR`.
 
 ## Required outcome
 
@@ -36,7 +36,7 @@ Do not claim completion until the source screenshots, configuration, generated i
 - Identify build commands, bundle/package identifiers, launch targets, test fixtures, demo accounts, and existing UI tests.
 - Do not invent credentials or use production customer data.
 
-Read `references/screen-selection.md` before choosing screens.
+Read `SKILL_DIR/references/screen-selection.md` before choosing screens.
 
 ### 2. Propose a capture plan
 
@@ -50,19 +50,19 @@ Read `references/screen-selection.md` before choosing screens.
 
 Read the relevant platform reference:
 
-- iOS: `references/ios-capture.md`
-- Android: `references/android-capture.md`
+- iOS: `SKILL_DIR/references/ios-capture.md`
+- Android: `SKILL_DIR/references/android-capture.md`
 
 For iOS Simulator captures, use:
 
 ```bash
-scripts/capture_ios.sh <output.png> [device-udid-or-booted]
+python "$SKILL_DIR/scripts/capture_ios.py" <output.png> [device-udid-or-booted]
 ```
 
 For Android captures, use:
 
 ```bash
-scripts/capture_android.sh <output.png> [device-serial]
+python "$SKILL_DIR/scripts/capture_android.py" <output.png> [device-serial]
 ```
 
 The helper scripts capture only the current device display. The agent remains responsible for building the app, launching it, creating safe sample state, navigating to the intended screen, and verifying that the captured state is correct.
@@ -81,7 +81,7 @@ Inspect every captured image before generation. Reject or recapture images conta
 
 ### 5. Write store copy
 
-Read `references/copy-guidelines.md`.
+Read `SKILL_DIR/references/copy-guidelines.md`.
 
 - Write one benefit-led headline and one short supporting sentence for each screen.
 - Prepare Japanese and English as natural, independent copy. Do not translate word-for-word when that sounds unnatural.
@@ -91,18 +91,19 @@ Read `references/copy-guidelines.md`.
 
 ### 6. Configure the design
 
-- Copy `GENERATOR_ROOT/config.example.yaml` into the run working directory.
+- Copy `SKILL_DIR/assets/config.template.yaml` to `<run-directory>/config.yaml`.
+- Copy the selected theme from `SKILL_DIR/assets/themes` to `<run-directory>/theme.yaml`, then customize that run-specific copy when needed.
 - Use absolute screenshot paths or paths relative to the run configuration.
-- Point the theme to one of the files under `GENERATOR_ROOT/themes`, or create a run-specific theme based on the app's verified brand colors.
+- Keep the configuration's theme path set to `./theme.yaml`.
 - Keep App Store and Google Play outputs enabled unless the user requests only one store.
 - Never overwrite the user's existing configuration without explicit intent. Use a new run directory by default.
 
 ### 7. Generate
 
-Create an isolated Python environment when one is not already available, install `GENERATOR_ROOT/requirements.txt`, then run:
+Create an isolated Python environment when one is not already available, install `SKILL_DIR/requirements.txt`, then run:
 
 ```bash
-python GENERATOR_ROOT/generate.py --config <run-directory>/config.yaml
+python "$SKILL_DIR/scripts/generate.py" --config <run-directory>/config.yaml
 ```
 
 Use `--overwrite` only after confirming that replacing the current run outputs is intended.
@@ -112,14 +113,14 @@ Use `--overwrite` only after confirming that replacing the current run outputs i
 Run:
 
 ```bash
-python scripts/validate_outputs.py --config <run-directory>/config.yaml
+python "$SKILL_DIR/scripts/validate_outputs.py" --config <run-directory>/config.yaml
 ```
 
 Validation must confirm expected file count, filename expansion, dimensions, PNG format, and RGB color mode.
 
 ### 9. Perform visual QA
 
-Read `references/qa-checklist.md`. Inspect all generated images, preferably as contact sheets grouped by store and locale. Check:
+Read `SKILL_DIR/references/qa-checklist.md`. Inspect all generated images, preferably as contact sheets grouped by store and locale. Check:
 
 - headline and body text are fully visible
 - app screenshots are not distorted or unintentionally cropped

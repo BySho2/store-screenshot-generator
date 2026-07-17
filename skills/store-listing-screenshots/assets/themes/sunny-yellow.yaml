@@ -1,0 +1,28 @@
+name: Sunny Yellow
+background:
+  type: gradient
+  colors:
+    - "#FFF8E1"
+    - "#FFE08A"
+    - "#FFBF24"
+  accent_glow: "#FFFFFF"
+headline:
+  color: "#172B3D"
+  max_size: 110
+  min_size: 58
+  max_lines: 3
+body:
+  color: "#405468"
+  max_size: 40
+  min_size: 24
+accent:
+  enabled: true
+  color: "#E39B00"
+device:
+  max_width_ratio: 0.82
+  max_height_ratio: 0.59
+  shadow: true
+panel:
+  enabled: true
+  color: "#FFFFFF"
+  opacity: 190

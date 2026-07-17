@@ -14,20 +14,46 @@
 
 ## AIエージェントで使う
 
-このリポジトリには、アプリの調査、撮影画面の選定、iOS Simulator／Android Emulatorからの撮影、日本語・英語コピーの作成、画像生成、最終確認までを進めるCodex Skillが含まれています。
+このリポジトリには、CodexとClaude Codeの両方で利用できる自己完結型のAgent Skillが含まれています。アプリの調査、撮影画面の選定、iOS Simulator／Android Emulatorからの撮影、日本語・英語コピーの作成、画像生成、最終確認までを一つのワークフローとして進めます。
 
-1. このリポジトリをcloneする
-2. Codexでこのリポジトリを開く
-3. 対象アプリのリポジトリを読み取れる場所に用意する
-4. 次のように依頼する
+### インストール
+
+[Skillフォルダ](skills/store-listing-screenshots)全体を、利用するAIエージェントの個人Skillフォルダへインストールします。
 
 ```text
-store-listing-screenshots Skillを使って、
-/path/to/my-app のApp Store／Google Play向け掲載画像を作成してください。
+Codex：      ~/.agents/skills/store-listing-screenshots/
+Claude Code：~/.claude/skills/store-listing-screenshots/
+```
+
+`SKILL.md`だけでなく、`scripts`、`assets`、`references`、`requirements.txt`を含むフォルダ全体が必要です。詳しくは[インストールガイド](skills/store-listing-screenshots/references/installation.ja.md)をご覧ください。
+
+Codexでは、`$skill-installer`に次のSkillフォルダをインストールするよう依頼することもできます。
+
+```text
+https://github.com/BySho2/store-screenshot-generator/tree/main/skills/store-listing-screenshots
+```
+
+### 実行
+
+インストール後、ストア画像を作りたいアプリのリポジトリをCodexまたはClaude Codeで開きます。画像生成リポジトリを開く必要はありません。
+
+Codex：
+
+```text
+$store-listing-screenshots を使って、
+このアプリのApp Store／Google Play向け掲載画像を作成してください。
 掲載に適した画面を選び、日本語版と英語版を生成してください。
 ```
 
-Codexは[Skillの手順](.agents/skills/store-listing-screenshots/SKILL.md)に沿って作業します。自動撮影には、対象プラットフォームの開発環境が必要です。
+Claude Code：
+
+```text
+/store-listing-screenshots
+このアプリのApp Store／Google Play向け掲載画像を作成してください。
+掲載に適した画面を選び、日本語版と英語版を生成してください。
+```
+
+AIエージェントは[共通Skillの手順](skills/store-listing-screenshots/SKILL.md)に沿って作業します。自動撮影には、対象プラットフォームの開発環境が必要です。
 
 - iOS：macOS、Xcode、起動可能なiOS Simulator
 - Android：Android SDK Platform Tools、接続済みのEmulatorまたは端末
@@ -155,7 +181,7 @@ python -m unittest discover -s tests -v
 生成済み画像だけを再検証する場合は、次のコマンドを使用できます。
 
 ```bash
-python .agents/skills/store-listing-screenshots/scripts/validate_outputs.py \
+python skills/store-listing-screenshots/scripts/validate_outputs.py \
   --config path/to/config.yaml
 ```
 

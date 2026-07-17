@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 import importlib.util
+import os
+import shutil
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -10,7 +14,7 @@ from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILL = ROOT / ".agents" / "skills" / "store-listing-screenshots"
+SKILL = ROOT / "skills" / "store-listing-screenshots"
 VALIDATOR_PATH = SKILL / "scripts" / "validate_outputs.py"
 
 
@@ -28,14 +32,22 @@ class SkillPackageTests(unittest.TestCase):
         required = [
             "SKILL.md",
             "agents/openai.yaml",
-            "scripts/capture_ios.sh",
-            "scripts/capture_android.sh",
+            "requirements.txt",
+            "assets/config.template.yaml",
+            "assets/themes/premium-navy.yaml",
+            "assets/themes/minimal-light.yaml",
+            "assets/themes/sunny-yellow.yaml",
+            "scripts/generate.py",
+            "scripts/capture_ios.py",
+            "scripts/capture_android.py",
             "scripts/validate_outputs.py",
             "references/screen-selection.md",
             "references/ios-capture.md",
             "references/android-capture.md",
             "references/copy-guidelines.md",
             "references/qa-checklist.md",
+            "references/installation.md",
+            "references/installation.ja.md",
         ]
         for relative in required:
             self.assertTrue((SKILL / relative).is_file(), relative)
@@ -47,6 +59,24 @@ class SkillPackageTests(unittest.TestCase):
         self.assertEqual(metadata["name"], "store-listing-screenshots")
         self.assertIn("App Store", metadata["description"])
         self.assertIn("Google Play", metadata["description"])
+
+    def test_codex_and_claude_discovery_paths_resolve_to_canonical_skill(self) -> None:
+        for relative in (
+            ".agents/skills/store-listing-screenshots",
+            ".claude/skills/store-listing-screenshots",
+        ):
+            link = ROOT / relative
+            self.assertTrue(link.is_symlink(), relative)
+            self.assertEqual(link.resolve(), SKILL.resolve())
+
+    def test_root_cli_uses_the_canonical_generator(self) -> None:
+        wrapper = (ROOT / "generate.py").read_text(encoding="utf-8")
+        self.assertIn('"skills"', wrapper)
+        self.assertIn('"store-listing-screenshots"', wrapper)
+        self.assertEqual(
+            (ROOT / "requirements.txt").read_text(encoding="utf-8"),
+            (SKILL / "requirements.txt").read_text(encoding="utf-8"),
+        )
 
     def test_validator_accepts_expected_images(self) -> None:
         validator = load_validator()
@@ -70,6 +100,89 @@ class SkillPackageTests(unittest.TestCase):
             config_path = root / "config.yaml"
             config_path.write_text(yaml.safe_dump(config), encoding="utf-8")
             self.assertEqual(validator.run(config_path), 1)
+
+    def test_validator_rejects_stale_extra_images(self) -> None:
+        validator = load_validator()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / "output" / "ja"
+            output.mkdir(parents=True)
+            Image.new("RGB", (1080, 1920), "white").save(output / "shot_ja_01.png")
+            Image.new("RGB", (1080, 1920), "white").save(output / "stale.png")
+            config = {
+                "locales": ["ja"],
+                "slides": [{"screenshot": "source.png"}],
+                "outputs": [
+                    {
+                        "name": "google-play",
+                        "preset": "google-play-phone-portrait",
+                        "directory": "./output",
+                        "filename": "shot_{locale}_{index:02d}.png",
+                    }
+                ],
+            }
+            config_path = root / "config.yaml"
+            config_path.write_text(yaml.safe_dump(config), encoding="utf-8")
+            with self.assertRaisesRegex(validator.ValidationError, "Unexpected PNG"):
+                validator.run(config_path)
+
+    def test_copied_skill_generates_and_validates_without_repository_files(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            copied_skill = root / "installed-skill"
+            shutil.copytree(SKILL, copied_skill)
+            run_dir = root / "run"
+            screenshots = run_dir / "screenshots"
+            screenshots.mkdir(parents=True)
+            Image.new("RGB", (390, 844), "#F4B400").save(screenshots / "01.png")
+            shutil.copy2(copied_skill / "assets/themes/minimal-light.yaml", run_dir / "theme.yaml")
+            config = {
+                "app": {"name": {"en": "Demo"}},
+                "locales": ["en"],
+                "outputs": [
+                    {
+                        "name": "google-play",
+                        "preset": "google-play-phone-portrait",
+                        "directory": "./generated/google-play",
+                        "filename": "shot_{locale}_{index:02d}.png",
+                    }
+                ],
+                "theme": "./theme.yaml",
+                "slides": [
+                    {
+                        "screenshot": "./screenshots/01.png",
+                        "text": {
+                            "en": {
+                                "title": "A Clear Store Message",
+                                "body": "Generated from a self-contained installed skill.",
+                            }
+                        },
+                    }
+                ],
+            }
+            config_path = run_dir / "config.yaml"
+            config_path.write_text(yaml.safe_dump(config), encoding="utf-8")
+            env = os.environ.copy()
+            subprocess.run(
+                [sys.executable, str(copied_skill / "scripts/generate.py"), "--config", str(config_path)],
+                check=True,
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(copied_skill / "scripts/validate_outputs.py"),
+                    "--config",
+                    str(config_path),
+                ],
+                check=True,
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            self.assertTrue((run_dir / "generated/google-play/en/shot_en_01.png").is_file())
 
 
 if __name__ == "__main__":

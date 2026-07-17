@@ -1,0 +1,39 @@
+app:
+  name:
+    ja: アプリ名
+    en: App Name
+
+locales:
+  - ja
+  - en
+
+outputs:
+  - name: app-store
+    preset: app-store-iphone-6.9
+    directory: ./generated/app-store
+    filename: screenshot_{locale}_{index:02d}.png
+
+  - name: google-play
+    preset: google-play-phone-portrait
+    directory: ./generated/google-play
+    filename: screenshot_{locale}_{index:02d}.png
+
+theme: ./theme.yaml
+
+fonts:
+  ja:
+    title: null
+    body: null
+  en:
+    title: null
+    body: null
+
+slides:
+  - screenshot: ./screenshots/01.png
+    text:
+      ja:
+        title: "最初のメリットを\n短く伝える"
+        body: "表示している画面で、ユーザーができることを説明します。"
+      en:
+        title: "Lead with a Clear\nUser Benefit"
+        body: "Explain what users can do on the screen shown here."
