@@ -6,6 +6,14 @@
 
 アプリ画面に見出しや説明文、背景デザインを組み合わせ、日本語版と英語版をまとめて生成できます。デザインや文章はYAMLファイルで変更できるため、アプリごとにPythonコードを書き換える必要はありません。
 
+## 生成例
+
+実際のアプリ「トレカンリ」のスクリーンショットから生成した例を、[examples/torekanri](examples/torekanri)に掲載しています。
+
+- [App Store向け・日本語](examples/torekanri/generated/app-store/ja/torekanri_ja_01.png)
+- [Google Play向け・日本語](examples/torekanri/generated/google-play/ja/torekanri_ja_01.png)
+- 設定内容：[examples/torekanri/config.yaml](examples/torekanri/config.yaml)
+
 ## 対応内容
 
 - 日本語・英語
@@ -62,6 +70,11 @@ python generate.py --config config.yaml --overwrite
 ## 設定例
 
 ```yaml
+app:
+  name:
+    ja: サンプルアプリ
+    en: Sample App
+
 outputs:
   - name: app-store
     preset: app-store-iphone-6.9
@@ -88,6 +101,7 @@ slides:
 
 - `themes/premium-navy.yaml`
 - `themes/minimal-light.yaml`
+- `themes/sunny-yellow.yaml`
 
 背景色、文字色、文字サイズ、アクセントカラー、スクリーンショットの大きさ、影などをYAMLで変更できます。詳しくは[テーマのカスタマイズ方法](docs/custom-themes.md)をご覧ください。
 
