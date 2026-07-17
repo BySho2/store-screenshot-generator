@@ -5,10 +5,16 @@ locales:
   - ja
   - en
 
-output:
-  preset: app-store-iphone-6.5
-  directory: ./output
-  filename: screenshot_{locale}_{index:02d}.png
+outputs:
+  - name: app-store
+    preset: app-store-iphone-6.9
+    directory: ./output/app-store
+    filename: screenshot_{locale}_{index:02d}.png
+
+  - name: google-play
+    preset: google-play-phone-portrait
+    directory: ./output/google-play
+    filename: screenshot_{locale}_{index:02d}.png
 
 theme: ./themes/premium-navy.yaml
 

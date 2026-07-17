@@ -19,6 +19,10 @@ class GeneratorTests(unittest.TestCase):
         self.assertLessEqual(resized.width, 800)
         self.assertLessEqual(resized.height, 800)
 
+    def test_apple_and_google_play_presets(self):
+        self.assertEqual(generate.PRESETS["app-store-iphone-6.9"], (1320, 2868))
+        self.assertEqual(generate.PRESETS["google-play-phone-portrait"], (1080, 1920))
+
     def test_japanese_text_wraps_without_spaces(self):
         candidates = generate.default_font_candidates("ja")
         path = next((Path(item) for item in candidates if Path(item).is_file()), None)
@@ -36,7 +40,13 @@ class GeneratorTests(unittest.TestCase):
             config = {
                 "app": {"name": "Test"},
                 "locales": ["ja", "en"],
-                "output": {"preset": "app-store-iphone-6.5", "directory": "./output"},
+                "outputs": [
+                    {
+                        "name": "app-store",
+                        "preset": "app-store-iphone-6.9",
+                        "directory": "./output/app-store",
+                    }
+                ],
                 "theme": "./theme.yaml",
                 "slides": [
                     {

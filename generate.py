@@ -12,7 +12,9 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 
 PRESETS = {
+    "app-store-iphone-6.9": (1320, 2868),
     "app-store-iphone-6.5": (1242, 2688),
+    "google-play-phone-portrait": (1080, 1920),
 }
 SUPPORTED_LOCALES = {"ja", "en"}
 SUPPORTED_INPUTS = {".png", ".jpg", ".jpeg", ".webp"}
@@ -27,9 +29,16 @@ class RenderContext:
     config_path: Path
     config: dict[str, Any]
     theme: dict[str, Any]
+    overwrite: bool
+
+
+@dataclass(frozen=True)
+class OutputTarget:
+    name: str
+    preset: str
     canvas_size: tuple[int, int]
     output_dir: Path
-    overwrite: bool
+    filename: str
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
@@ -59,13 +68,38 @@ def parse_hex_color(value: str, *, alpha: int = 255) -> tuple[int, int, int, int
         raise ConfigError(f"Invalid color: {value}") from exc
 
 
-def canvas_size(config: dict[str, Any]) -> tuple[int, int]:
-    output = config.get("output", {})
-    preset = output.get("preset")
-    if preset not in PRESETS:
-        options = ", ".join(sorted(PRESETS))
-        raise ConfigError(f"Unknown output preset '{preset}'. Available: {options}")
-    return PRESETS[preset]
+def output_targets(config: dict[str, Any], base: Path) -> list[OutputTarget]:
+    outputs = config.get("outputs")
+    if not isinstance(outputs, list) or not outputs:
+        raise ConfigError("'outputs' must be a non-empty list")
+    targets: list[OutputTarget] = []
+    names: set[str] = set()
+    for index, output in enumerate(outputs, start=1):
+        if not isinstance(output, dict):
+            raise ConfigError(f"Output {index} must be an object")
+        name = str(output.get("name", "")).strip()
+        preset = str(output.get("preset", "")).strip()
+        directory = output.get("directory")
+        if not name:
+            raise ConfigError(f"Output {index} is missing 'name'")
+        if name in names:
+            raise ConfigError(f"Duplicate output name: {name}")
+        names.add(name)
+        if preset not in PRESETS:
+            options = ", ".join(sorted(PRESETS))
+            raise ConfigError(f"Unknown output preset '{preset}'. Available: {options}")
+        if not directory:
+            raise ConfigError(f"Output '{name}' is missing 'directory'")
+        targets.append(
+            OutputTarget(
+                name=name,
+                preset=preset,
+                canvas_size=PRESETS[preset],
+                output_dir=resolve_path(base, str(directory)),
+                filename=str(output.get("filename", "screenshot_{locale}_{index:02d}.png")),
+            )
+        )
+    return targets
 
 
 def default_font_candidates(locale: str) -> list[str]:
@@ -107,6 +141,7 @@ def validate(context: RenderContext) -> None:
         raise ConfigError(f"Initial release supports only ja and en: {sorted(invalid)}")
     if len(locales) != len(set(locales)):
         raise ConfigError("'locales' contains duplicates")
+    output_targets(config, context.config_path.parent)
 
     slides = config.get("slides")
     if not isinstance(slides, list) or not slides:
@@ -242,9 +277,16 @@ def add_shadow(image: Image.Image) -> Image.Image:
     return canvas
 
 
-def render(context: RenderContext, locale: str, index: int, slide: dict[str, Any], base: Image.Image) -> Path:
+def render(
+    context: RenderContext,
+    target: OutputTarget,
+    locale: str,
+    index: int,
+    slide: dict[str, Any],
+    base: Image.Image,
+) -> Path:
     config, theme = context.config, context.theme
-    width, height = context.canvas_size
+    width, height = target.canvas_size
     image = base.copy()
     draw = ImageDraw.Draw(image)
     margin = round(width * 0.087)
@@ -332,12 +374,12 @@ def render(context: RenderContext, locale: str, index: int, slide: dict[str, Any
             fill=(255, 255, 255, 128) if theme["background"]["colors"][0] != "#FFFFFF" else (16, 24, 40, 128),
         )
 
-    filename_template = config["output"].get("filename", "screenshot_{locale}_{index:02d}.png")
+    filename_template = target.filename
     try:
         filename = filename_template.format(locale=locale, index=index)
     except (KeyError, ValueError) as exc:
         raise ConfigError(f"Invalid output filename template: {filename_template}") from exc
-    output_path = context.output_dir / locale / filename
+    output_path = target.output_dir / locale / filename
     output_path.parent.mkdir(parents=True, exist_ok=True)
     if output_path.exists() and not context.overwrite:
         raise ConfigError(f"Output already exists: {output_path}. Re-run with --overwrite to replace it.")
@@ -352,15 +394,10 @@ def build_context(config_path: Path, overwrite: bool) -> RenderContext:
     if not theme_value:
         raise ConfigError("Missing 'theme' path in config")
     theme = load_yaml(resolve_path(config_path.parent, theme_value))
-    output_value = config.get("output", {}).get("directory")
-    if not output_value:
-        raise ConfigError("Missing output.directory in config")
     context = RenderContext(
         config_path=config_path,
         config=config,
         theme=theme,
-        canvas_size=canvas_size(config),
-        output_dir=resolve_path(config_path.parent, output_value),
         overwrite=overwrite,
     )
     validate(context)
@@ -369,16 +406,19 @@ def build_context(config_path: Path, overwrite: bool) -> RenderContext:
 
 def run(config_path: Path, overwrite: bool = False) -> list[Path]:
     context = build_context(config_path, overwrite)
-    background = make_background(context.canvas_size, context.theme)
     outputs: list[Path] = []
-    for locale in context.config["locales"]:
-        for index, slide in enumerate(context.config["slides"], start=1):
-            outputs.append(render(context, locale, index, slide, background))
+    for target in output_targets(context.config, context.config_path.parent):
+        background = make_background(target.canvas_size, context.theme)
+        for locale in context.config["locales"]:
+            for index, slide in enumerate(context.config["slides"], start=1):
+                outputs.append(render(context, target, locale, index, slide, background))
     return outputs
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Generate localized App Store screenshots from a YAML config.")
+    parser = argparse.ArgumentParser(
+        description="Generate localized App Store and Google Play listing images from app screenshots."
+    )
     parser.add_argument("--config", type=Path, required=True, help="Path to config.yaml")
     parser.add_argument("--overwrite", action="store_true", help="Replace existing generated files")
     args = parser.parse_args()
