@@ -72,7 +72,7 @@ See [examples/torekanri](examples/torekanri) for store listing images generated 
 
 - [App Store, Japanese](examples/torekanri/generated/app-store/ja/torekanri_ja_01.png)
 - [Google Play, Japanese](examples/torekanri/generated/google-play/ja/torekanri_ja_01.png)
-- Configuration: [examples/torekanri/config.yaml](examples/torekanri/config.yaml)
+- Configuration: [examples/torekanri/config.example.yaml](examples/torekanri/config.example.yaml)
 
 ## Supported Output
 

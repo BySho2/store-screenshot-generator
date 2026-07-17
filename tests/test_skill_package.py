@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -28,6 +29,28 @@ def load_validator():
 
 
 class SkillPackageTests(unittest.TestCase):
+    def test_local_markdown_links_resolve(self) -> None:
+        link_pattern = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
+        image_pattern = re.compile(r'<img\s+[^>]*src="([^"]+)"')
+        for markdown in ROOT.rglob("*.md"):
+            if any(part.startswith(".") for part in markdown.relative_to(ROOT).parts):
+                continue
+            text = markdown.read_text(encoding="utf-8")
+            for target in link_pattern.findall(text) + image_pattern.findall(text):
+                if target.startswith(("http://", "https://", "#")):
+                    continue
+                path = target.split("#", 1)[0]
+                self.assertTrue((markdown.parent / path).exists(), f"{markdown}: {target}")
+
+    def test_torekanri_example_is_reproducible(self) -> None:
+        config_path = ROOT / "examples/torekanri/config.example.yaml"
+        config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+        self.assertEqual(len(config["slides"]), 3)
+        self.assertEqual({output["name"] for output in config["outputs"]}, {"app-store", "google-play"})
+        for slide in config["slides"]:
+            self.assertTrue((config_path.parent / slide["screenshot"]).is_file())
+        self.assertTrue((config_path.parent / config["theme"]).is_file())
+
     def test_skill_package_contains_required_files(self) -> None:
         required = [
             "SKILL.md",

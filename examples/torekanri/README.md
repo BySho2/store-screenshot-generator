@@ -11,7 +11,7 @@ This example generates App Store and Google Play listing images from screenshots
 Run this command from the repository root:
 
 ```bash
-python generate.py --config examples/torekanri/config.yaml --overwrite
+python generate.py --config examples/torekanri/config.example.yaml --overwrite
 ```
 
 ## 出力 / Outputs

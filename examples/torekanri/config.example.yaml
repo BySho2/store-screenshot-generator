@@ -1,0 +1,57 @@
+app:
+  name:
+    ja: トレカンリ
+    en: Torekanri
+
+locales:
+  - ja
+  - en
+
+outputs:
+  - name: app-store
+    preset: app-store-iphone-6.9
+    directory: ./generated/app-store
+    filename: torekanri_{locale}_{index:02d}.png
+
+  - name: google-play
+    preset: google-play-phone-portrait
+    directory: ./generated/google-play
+    filename: torekanri_{locale}_{index:02d}.png
+
+theme: ../../themes/sunny-yellow.yaml
+
+fonts:
+  ja:
+    title: null
+    body: null
+  en:
+    title: null
+    body: null
+
+slides:
+  - screenshot: ./screenshots/calendar.png
+    text:
+      ja:
+        title: "取引と収支を\nカレンダーで確認"
+        body: "仕入・売却の記録を日付ごとにまとめ、毎月の流れをひと目で把握。"
+      en:
+        title: "See Trades and Profit\non Your Calendar"
+        body: "Review purchases, sales, and monthly activity by date."
+
+  - screenshot: ./screenshots/trade-entry.png
+    text:
+      ja:
+        title: "仕入も売却も\nかんたんに記録"
+        body: "カード情報や金額を入力して、日々の取引をスムーズに管理。"
+      en:
+        title: "Record Purchases\nand Sales with Ease"
+        body: "Enter card details and amounts to keep every trade organized."
+
+  - screenshot: ./screenshots/profit.png
+    text:
+      ja:
+        title: "収支と在庫を\nまとめて見える化"
+        body: "純損益や手数料、在庫状況を確認し、トレカの取引管理をもっと分かりやすく。"
+      en:
+        title: "Track Profit and\nInventory Together"
+        body: "See net profit, fees, and inventory in one clear overview."

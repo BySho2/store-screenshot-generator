@@ -73,7 +73,7 @@ AIエージェントは[共通Skillの手順](skills/store-listing-screenshots/S
 
 - [App Store向け・日本語](examples/torekanri/generated/app-store/ja/torekanri_ja_01.png)
 - [Google Play向け・日本語](examples/torekanri/generated/google-play/ja/torekanri_ja_01.png)
-- 設定内容：[examples/torekanri/config.yaml](examples/torekanri/config.yaml)
+- 設定内容：[examples/torekanri/config.example.yaml](examples/torekanri/config.example.yaml)
 
 ## 対応内容
 
