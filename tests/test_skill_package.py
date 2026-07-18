@@ -68,6 +68,8 @@ class SkillPackageTests(unittest.TestCase):
             "assets/themes/minimal-light.yaml",
             "assets/themes/modern-gradient.yaml",
             "assets/themes/sunny-yellow.yaml",
+            "assets/themes/dark-neon.yaml",
+            "assets/themes/soft-pastel.yaml",
             "scripts/generate.py",
             "scripts/capture_ios.py",
             "scripts/capture_android.py",

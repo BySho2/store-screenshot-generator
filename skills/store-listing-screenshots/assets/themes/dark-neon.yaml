@@ -1,0 +1,48 @@
+name: Dark Neon
+background:
+  type: gradient
+  colors:
+    - "#070B17"
+    - "#111A33"
+    - "#071A24"
+  glows:
+    - color: "#2DD4BF"
+      opacity: 82
+      x: 0.86
+      y: 0.08
+      size: 0.78
+      blur: 0.12
+    - color: "#7C3AED"
+      opacity: 66
+      x: 0.08
+      y: 0.58
+      size: 0.7
+      blur: 0.14
+headline:
+  color: "#F8FAFC"
+  max_size: 112
+  min_size: 58
+  max_lines: 3
+body:
+  color: "#CBD5E1"
+  max_size: 40
+  min_size: 24
+accent:
+  enabled: true
+  color: "#2DD4BF"
+device:
+  max_width_ratio: 0.84
+  max_height_ratio: 0.61
+  frame: rounded
+  corner_radius_ratio: 0.058
+  shadow:
+    enabled: true
+    opacity: 96
+    blur_ratio: 0.038
+    offset_y_ratio: 0.018
+    padding_ratio: 0.05
+panel:
+  enabled: false
+footer:
+  enabled: false
+
