@@ -81,6 +81,8 @@ See [examples/torekanri](examples/torekanri) for store listing images generated 
 - Google Play: phone portrait (`1080 x 1920`)
 - Apple and Google Play outputs generated in one run
 - YAML configuration for copy, source screenshots, and visual themes
+- Raw, rounded, generic-device, and external frame asset modes
+- Per-store device presentation overrides
 - Automatic Japanese and English line wrapping and text sizing
 - PNG, JPEG, and WebP source images
 - RGB PNG output without alpha channels
@@ -138,13 +140,14 @@ app:
 
 ## Customize the Design
 
-Three themes are included:
+Four themes are included:
 
+- `themes/modern-gradient.yaml` (recommended default)
 - `themes/premium-navy.yaml`
 - `themes/minimal-light.yaml`
 - `themes/sunny-yellow.yaml`
 
-You can change background colors, typography, accent colors, screenshot size, shadows, and other visual settings in YAML. See [Custom Themes](docs/custom-themes.md).
+You can change background colors, typography, accent colors, screenshot size, corner treatment, frames, and shadows in YAML. The background panel and shadow can be disabled independently. See [Custom Themes](docs/custom-themes.md).
 
 ## How Images Are Generated
 

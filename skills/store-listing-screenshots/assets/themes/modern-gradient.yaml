@@ -1,0 +1,49 @@
+name: Modern Gradient
+background:
+  type: gradient
+  colors:
+    - "#F8FAFF"
+    - "#EEF3FF"
+    - "#E9F0FF"
+  glows:
+    - color: "#7CA5FF"
+      opacity: 72
+      x: 0.88
+      y: 0.08
+      size: 0.82
+      blur: 0.11
+    - color: "#C9B8FF"
+      opacity: 54
+      x: 0.08
+      y: 0.56
+      size: 0.72
+      blur: 0.13
+headline:
+  color: "#101828"
+  max_size: 108
+  min_size: 56
+  max_lines: 3
+body:
+  color: "#475467"
+  max_size: 38
+  min_size: 23
+accent:
+  enabled: true
+  color: "#4F6FE8"
+device:
+  max_width_ratio: 0.86
+  max_height_ratio: 0.62
+  frame: rounded
+  corner_radius_ratio: 0.052
+  border_ratio: 0.003
+  border_color: "#FFFFFF"
+  shadow:
+    enabled: true
+    opacity: 62
+    blur_ratio: 0.032
+    offset_y_ratio: 0.016
+    padding_ratio: 0.045
+panel:
+  enabled: false
+footer:
+  enabled: false

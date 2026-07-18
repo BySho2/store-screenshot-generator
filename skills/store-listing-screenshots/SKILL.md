@@ -96,6 +96,11 @@ Read `SKILL_DIR/references/copy-guidelines.md`.
 - Use absolute screenshot paths or paths relative to the run configuration.
 - Keep the configuration's theme path set to `./theme.yaml`.
 - Keep App Store and Google Play outputs enabled unless the user requests only one store.
+- Prefer `modern-gradient.yaml` as the starting point unless the app's existing brand clearly calls for another theme.
+- Do not add a large background panel by default. Use `panel.enabled: false` unless the panel materially improves contrast.
+- Use `device.frame: rounded` as the safe general default. A neutral `generic` frame may be used when it improves the presentation without implying a specific manufacturer.
+- Configure App Store and Google Play device presentation separately in each output when appropriate. Prefer a plain rounded screenshot for Google Play listing output.
+- Use `device.frame: asset` only with a frame image the user is authorized to use. Do not download or redistribute Apple, Google, or manufacturer artwork without confirming its terms.
 - Never overwrite the user's existing configuration without explicit intent. Use a new run directory by default.
 
 ### 7. Generate

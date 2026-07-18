@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 import yaml
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 
 PRESETS = {
@@ -39,6 +39,7 @@ class OutputTarget:
     canvas_size: tuple[int, int]
     output_dir: Path
     filename: str
+    device: dict[str, Any]
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
@@ -90,6 +91,9 @@ def output_targets(config: dict[str, Any], base: Path) -> list[OutputTarget]:
             raise ConfigError(f"Unknown output preset '{preset}'. Available: {options}")
         if not directory:
             raise ConfigError(f"Output '{name}' is missing 'directory'")
+        device_value = output.get("device", {})
+        if not isinstance(device_value, dict):
+            raise ConfigError(f"Output '{name}' device settings must be an object")
         targets.append(
             OutputTarget(
                 name=name,
@@ -97,9 +101,53 @@ def output_targets(config: dict[str, Any], base: Path) -> list[OutputTarget]:
                 canvas_size=PRESETS[preset],
                 output_dir=resolve_path(base, str(directory)),
                 filename=str(output.get("filename", "screenshot_{locale}_{index:02d}.png")),
+                device=device_value,
             )
         )
     return targets
+
+
+def merged_device_settings(theme: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
+    base = copy.deepcopy(theme.get("device", {}))
+    if not isinstance(base, dict):
+        raise ConfigError("Theme 'device' settings must be an object")
+    for key, value in override.items():
+        if isinstance(value, dict) and isinstance(base.get(key), dict):
+            base[key].update(value)
+        else:
+            base[key] = value
+    return base
+
+
+def validate_device_settings(device: dict[str, Any], base: Path) -> None:
+    mode = str(device.get("frame", "raw")).lower()
+    if mode not in {"raw", "rounded", "generic", "asset"}:
+        raise ConfigError("device.frame must be one of: raw, rounded, generic, asset")
+    for key in ("max_width_ratio", "max_height_ratio"):
+        if float(device.get(key, 0)) <= 0:
+            raise ConfigError(f"device.{key} must be greater than zero")
+    shadow = device.get("shadow", True)
+    if not isinstance(shadow, (bool, dict)):
+        raise ConfigError("device.shadow must be true, false, or an object")
+    if mode != "asset":
+        return
+    asset_value = device.get("frame_asset")
+    rect = device.get("screen_rect")
+    if not asset_value:
+        raise ConfigError("device.frame 'asset' requires device.frame_asset")
+    if not isinstance(rect, list) or len(rect) != 4:
+        raise ConfigError("device.frame 'asset' requires screen_rect: [x, y, width, height]")
+    asset_path = resolve_path(base, str(asset_value))
+    if not asset_path.is_file():
+        raise ConfigError(f"Device frame asset not found: {asset_path}")
+    try:
+        x, y, screen_width, screen_height = [int(value) for value in rect]
+    except (TypeError, ValueError) as exc:
+        raise ConfigError("device.screen_rect values must be integers") from exc
+    with Image.open(asset_path) as frame:
+        frame_width, frame_height = frame.size
+    if x < 0 or y < 0 or screen_width <= 0 or screen_height <= 0 or x + screen_width > frame_width or y + screen_height > frame_height:
+        raise ConfigError("device.screen_rect must fit inside the frame asset")
 
 
 def default_font_candidates(locale: str) -> list[str]:
@@ -141,7 +189,9 @@ def validate(context: RenderContext) -> None:
         raise ConfigError(f"Initial release supports only ja and en: {sorted(invalid)}")
     if len(locales) != len(set(locales)):
         raise ConfigError("'locales' contains duplicates")
-    output_targets(config, context.config_path.parent)
+    targets = output_targets(config, context.config_path.parent)
+    for target in targets:
+        validate_device_settings(merged_device_settings(context.theme, target.device), context.config_path.parent)
 
     slides = config.get("slides")
     if not isinstance(slides, list) or not slides:
@@ -187,11 +237,34 @@ def make_background(size: tuple[int, int], theme: dict[str, Any]) -> Image.Image
         pixels[0, y] = interpolate_color(colors, y / max(height - 1, 1))
     image = line.resize(size)
 
-    glow_color = parse_hex_color(theme["background"].get("accent_glow", "#FFFFFF"), alpha=42)
+    background = theme["background"]
     overlay = Image.new("RGBA", size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(overlay)
-    draw.ellipse((-width // 4, -height // 10, width // 2, height // 4), fill=glow_color)
-    overlay = overlay.filter(ImageFilter.GaussianBlur(max(width // 20, 16)))
+    glows = background.get("glows")
+    if not isinstance(glows, list):
+        glows = [
+            {
+                "color": background.get("accent_glow", "#FFFFFF"),
+                "opacity": 42,
+                "x": 0.08,
+                "y": 0.04,
+                "size": 0.68,
+                "blur": 0.08,
+            }
+        ]
+    for glow in glows:
+        if not isinstance(glow, dict):
+            continue
+        diameter = max(round(width * float(glow.get("size", 0.65))), 1)
+        center_x = round(width * float(glow.get("x", 0.5)))
+        center_y = round(height * float(glow.get("y", 0.25)))
+        radius = diameter // 2
+        color = parse_hex_color(str(glow.get("color", "#FFFFFF")), alpha=int(glow.get("opacity", 42)))
+        glow_layer = Image.new("RGBA", size, (0, 0, 0, 0))
+        glow_draw = ImageDraw.Draw(glow_layer)
+        glow_draw.ellipse((center_x - radius, center_y - radius, center_x + radius, center_y + radius), fill=color)
+        blur = max(round(width * float(glow.get("blur", 0.08))), 1)
+        overlay = Image.alpha_composite(overlay, glow_layer.filter(ImageFilter.GaussianBlur(blur)))
     return Image.alpha_composite(image, overlay)
 
 
@@ -265,14 +338,105 @@ def contain_image(image: Image.Image, max_width: int, max_height: int) -> Image.
     return image.resize(size, Image.Resampling.LANCZOS)
 
 
-def add_shadow(image: Image.Image) -> Image.Image:
-    padding = max(round(min(image.size) * 0.06), 28)
-    canvas = Image.new("RGBA", (image.width + padding * 2, image.height + padding * 2), (0, 0, 0, 0))
+def cover_image(image: Image.Image, width: int, height: int) -> Image.Image:
+    scale = max(width / image.width, height / image.height)
+    resized = image.resize((max(1, round(image.width * scale)), max(1, round(image.height * scale))), Image.Resampling.LANCZOS)
+    left = max((resized.width - width) // 2, 0)
+    top = max((resized.height - height) // 2, 0)
+    return resized.crop((left, top, left + width, top + height))
+
+
+def rounded_image(image: Image.Image, radius: int) -> Image.Image:
+    radius = max(min(radius, min(image.size) // 2), 0)
+    if radius == 0:
+        return image.copy()
+    result = image.copy()
+    mask = Image.new("L", image.size, 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, image.width - 1, image.height - 1), radius=radius, fill=255)
+    result.putalpha(ImageChops.multiply(result.getchannel("A"), mask))
+    return result
+
+
+def generic_device_frame(image: Image.Image, device: dict[str, Any]) -> Image.Image:
+    bezel = max(round(min(image.size) * float(device.get("bezel_ratio", 0.022))), 6)
+    outer_radius = max(round(min(image.size) * float(device.get("corner_radius_ratio", 0.065))), bezel)
+    screen_radius = max(outer_radius - bezel, 0)
+    screen = rounded_image(image, screen_radius)
+    canvas = Image.new("RGBA", (image.width + bezel * 2, image.height + bezel * 2), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(canvas)
+    draw.rounded_rectangle(
+        (0, 0, canvas.width - 1, canvas.height - 1),
+        radius=outer_radius,
+        fill=parse_hex_color(str(device.get("bezel_color", "#15171C"))),
+    )
+    canvas.alpha_composite(screen, (bezel, bezel))
+    return canvas
+
+
+def external_device_frame(image: Image.Image, device: dict[str, Any], base: Path) -> Image.Image:
+    asset_value = device.get("frame_asset")
+    rect = device.get("screen_rect")
+    if not asset_value:
+        raise ConfigError("device.frame 'asset' requires device.frame_asset")
+    if not isinstance(rect, list) or len(rect) != 4:
+        raise ConfigError("device.frame 'asset' requires screen_rect: [x, y, width, height]")
+    asset_path = resolve_path(base, str(asset_value))
+    if not asset_path.is_file():
+        raise ConfigError(f"Device frame asset not found: {asset_path}")
+    with Image.open(asset_path) as frame_source:
+        frame = frame_source.convert("RGBA")
+    try:
+        x, y, screen_width, screen_height = [int(value) for value in rect]
+    except (TypeError, ValueError) as exc:
+        raise ConfigError("device.screen_rect values must be integers") from exc
+    if x < 0 or y < 0 or screen_width <= 0 or screen_height <= 0 or x + screen_width > frame.width or y + screen_height > frame.height:
+        raise ConfigError("device.screen_rect must fit inside the frame asset")
+    canvas = Image.new("RGBA", frame.size, (0, 0, 0, 0))
+    canvas.alpha_composite(cover_image(image, screen_width, screen_height), (x, y))
+    canvas.alpha_composite(frame)
+    return canvas
+
+
+def render_device(image: Image.Image, device: dict[str, Any], base: Path) -> Image.Image:
+    mode = str(device.get("frame", "raw")).lower()
+    if mode == "raw":
+        return image.copy()
+    if mode == "rounded":
+        radius = round(min(image.size) * float(device.get("corner_radius_ratio", 0.055)))
+        result = rounded_image(image, radius)
+        border = max(round(min(image.size) * float(device.get("border_ratio", 0.0))), 0)
+        if border:
+            outer = Image.new("RGBA", (result.width + border * 2, result.height + border * 2), (0, 0, 0, 0))
+            ImageDraw.Draw(outer).rounded_rectangle(
+                (0, 0, outer.width - 1, outer.height - 1),
+                radius=radius + border,
+                fill=parse_hex_color(str(device.get("border_color", "#FFFFFF"))),
+            )
+            outer.alpha_composite(result, (border, border))
+            return outer
+        return result
+    if mode == "generic":
+        return generic_device_frame(image, device)
+    if mode == "asset":
+        return external_device_frame(image, device, base)
+    raise ConfigError("device.frame must be one of: raw, rounded, generic, asset")
+
+
+def add_shadow(image: Image.Image, shadow: bool | dict[str, Any] = True) -> Image.Image:
+    settings = shadow if isinstance(shadow, dict) else {"enabled": bool(shadow)}
+    if not settings.get("enabled", True):
+        return image
+    padding_ratio = float(settings.get("padding_ratio", 0.045))
+    padding = max(round(min(image.size) * padding_ratio), 18)
+    offset_y = round(min(image.size) * float(settings.get("offset_y_ratio", 0.018)))
+    blur = max(round(min(image.size) * float(settings.get("blur_ratio", 0.035))), 4)
+    opacity = max(0, min(int(settings.get("opacity", 72)), 255))
+    canvas = Image.new("RGBA", (image.width + padding * 2, image.height + padding * 2 + max(offset_y, 0)), (0, 0, 0, 0))
     mask = image.getchannel("A")
     shadow_mask = Image.new("L", canvas.size, 0)
-    shadow_mask.paste(mask, (padding, padding))
-    shadow_mask = shadow_mask.filter(ImageFilter.GaussianBlur(max(padding // 3, 8)))
-    canvas.paste((0, 0, 0, 115), (0, 0), shadow_mask)
+    shadow_mask.paste(mask, (padding, padding + offset_y))
+    shadow_mask = shadow_mask.filter(ImageFilter.GaussianBlur(blur))
+    canvas.paste((0, 0, 0, opacity), (0, 0), shadow_mask)
     canvas.alpha_composite(image, (padding, padding))
     return canvas
 
@@ -341,24 +505,32 @@ def render(
     panel = theme.get("panel", {})
     if panel.get("enabled", True):
         color = parse_hex_color(panel.get("color", "#FFFFFF"), alpha=int(panel.get("opacity", 14)))
+        outline_width = max(int(panel.get("outline_width", 0)), 0)
+        outline = None
+        if outline_width:
+            outline = parse_hex_color(
+                str(panel.get("outline_color", "#FFFFFF")),
+                alpha=int(panel.get("outline_opacity", 28)),
+            )
         draw.rounded_rectangle(
             (round(width * 0.066), panel_top, width - round(width * 0.066), panel_bottom),
             radius=round(width * 0.046),
             fill=color,
-            outline=parse_hex_color("#FFFFFF", alpha=28),
-            width=2,
+            outline=outline,
+            width=outline_width,
         )
 
     source = resolve_path(context.config_path.parent, slide["screenshot"])
     with Image.open(source) as original:
         phone = original.convert("RGBA")
-    device = theme["device"]
-    phone = contain_image(
-        phone,
+    device = merged_device_settings(theme, target.device)
+    framed = render_device(phone, device, context.config_path.parent)
+    framed = contain_image(
+        framed,
         round(width * float(device["max_width_ratio"])),
         round(height * float(device["max_height_ratio"])),
     )
-    rendered = add_shadow(phone) if device.get("shadow", True) else phone
+    rendered = add_shadow(framed, device.get("shadow", True))
     phone_x = (width - rendered.width) // 2
     phone_y = panel_top + max((panel_bottom - panel_top - rendered.height) // 2, 0)
     image.alpha_composite(rendered, (phone_x, phone_y))
@@ -368,14 +540,24 @@ def render(
         app_name = str(app_name_value.get(locale, "")).strip()
     else:
         app_name = str(app_name_value).strip()
-    if app_name:
+    footer = theme.get("footer", {})
+    if app_name and footer.get("enabled", True):
         footer_font = ImageFont.truetype(str(resolve_font(config, font_base, locale, "body")), size=24)
         footer_box = draw.textbbox((0, 0), app_name, font=footer_font)
+        configured_footer_color = footer.get("color")
+        if configured_footer_color:
+            footer_fill = parse_hex_color(str(configured_footer_color), alpha=int(footer.get("opacity", 128)))
+        else:
+            footer_fill = (
+                (255, 255, 255, int(footer.get("opacity", 128)))
+                if theme["background"]["colors"][0] != "#FFFFFF"
+                else (16, 24, 40, int(footer.get("opacity", 128)))
+            )
         draw.text(
             (width - margin - (footer_box[2] - footer_box[0]), height - round(height * 0.052)),
             app_name,
             font=footer_font,
-            fill=(255, 255, 255, 128) if theme["background"]["colors"][0] != "#FFFFFF" else (16, 24, 40, 128),
+            fill=footer_fill,
         )
 
     filename_template = target.filename

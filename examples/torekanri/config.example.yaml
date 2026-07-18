@@ -12,13 +12,17 @@ outputs:
     preset: app-store-iphone-6.9
     directory: ./generated/app-store
     filename: torekanri_{locale}_{index:02d}.png
+    device:
+      frame: generic
 
   - name: google-play
     preset: google-play-phone-portrait
     directory: ./generated/google-play
     filename: torekanri_{locale}_{index:02d}.png
+    device:
+      frame: rounded
 
-theme: ../../themes/sunny-yellow.yaml
+theme: ../../themes/modern-gradient.yaml
 
 fonts:
   ja:
