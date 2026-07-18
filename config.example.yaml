@@ -10,13 +10,17 @@ outputs:
     preset: app-store-iphone-6.9
     directory: ./output/app-store
     filename: screenshot_{locale}_{index:02d}.png
+    device:
+      frame: generic
 
   - name: google-play
     preset: google-play-phone-portrait
     directory: ./output/google-play
     filename: screenshot_{locale}_{index:02d}.png
+    device:
+      frame: rounded
 
-theme: ./themes/premium-navy.yaml
+theme: ./themes/modern-gradient.yaml
 
 fonts:
   ja:

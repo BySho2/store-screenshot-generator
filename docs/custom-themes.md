@@ -7,7 +7,7 @@
 付属テーマをコピーし、YAMLの値を変更すると、Pythonコードを書き換えずにデザインを変更できます。
 
 ```bash
-cp themes/premium-navy.yaml themes/my-brand.yaml
+cp themes/modern-gradient.yaml themes/my-brand.yaml
 ```
 
 次に、`config.yaml`の`theme`へ作成したファイルを指定します。
@@ -25,15 +25,83 @@ theme: ./themes/my-brand.yaml
 - スクリーンショットの最大幅・最大高
 - スクリーンショットの影
 - 背景パネルの色と透明度
+- スクリーンショットの角丸、汎用端末枠、外部フレーム素材
+- 背景の複数の光彩とその位置
+- アプリ名フッターの表示
 
 色は`#RRGGBB`形式で指定します。大きさの比率は`0`から`1`の小数で指定します。
+
+### 白いパネルと影を消す
+
+```yaml
+panel:
+  enabled: false
+
+device:
+  frame: rounded
+  shadow:
+    enabled: false
+```
+
+`panel`と`shadow`は独立しているため、どちらか一方だけを残すこともできます。
+
+### スクリーンショットの表示方式
+
+`device.frame`では次の4種類を指定できます。
+
+- `raw`：加工せずに配置する
+- `rounded`：スクリーンショットを角丸に切り抜く
+- `generic`：特定メーカーを表現しない汎用端末枠へ入れる
+- `asset`：利用者が用意した透過PNGフレームへ入れる
+
+標準のモダンテーマは`rounded`です。ストアごとに表示方式を変える場合は、`config.yaml`の各出力へ上書きを追加します。
+
+```yaml
+outputs:
+  - name: app-store
+    preset: app-store-iphone-6.9
+    directory: ./output/app-store
+    device:
+      frame: generic
+
+  - name: google-play
+    preset: google-play-phone-portrait
+    directory: ./output/google-play
+    device:
+      frame: rounded
+```
+
+### 外部フレーム素材を使う
+
+フレーム素材は透明な画面領域を持つPNGにしてください。`screen_rect`には、元のフレーム画像上でスクリーンショットを配置する`[左, 上, 幅, 高さ]`をピクセルで指定します。
+
+```yaml
+device:
+  frame: asset
+  frame_asset: ./frames/device-frame.png
+  screen_rect: [72, 68, 1176, 2548]
+```
+
+外部素材はリポジトリに同梱されません。Apple、Google、端末メーカーなどの素材を使用する場合は、利用者自身で正規に取得し、用途とライセンス条件を確認してください。
+
+### 影を調整する
+
+```yaml
+device:
+  shadow:
+    enabled: true
+    opacity: 62
+    blur_ratio: 0.032
+    offset_y_ratio: 0.016
+    padding_ratio: 0.045
+```
 
 ## English
 
 Copy an included theme and edit its YAML values to customize the design without changing the Python source.
 
 ```bash
-cp themes/premium-navy.yaml themes/my-brand.yaml
+cp themes/modern-gradient.yaml themes/my-brand.yaml
 ```
 
 Set the new theme path in `config.yaml`:
@@ -42,4 +110,69 @@ Set the new theme path in `config.yaml`:
 theme: ./themes/my-brand.yaml
 ```
 
-You can customize background gradients, text colors and sizes, accent colors, screenshot size limits, shadows, and panel styling. Colors use `#RRGGBB`; ratios use decimal values between `0` and `1`.
+You can customize background gradients and glows, text colors and sizes, accent colors, screenshot size limits, frames, shadows, panel styling, and footer visibility. Colors use `#RRGGBB`; ratios use decimal values between `0` and `1`.
+
+### Remove the panel and shadow
+
+```yaml
+panel:
+  enabled: false
+
+device:
+  frame: rounded
+  shadow:
+    enabled: false
+```
+
+The panel and shadow are independent and can be enabled separately.
+
+### Screenshot presentation modes
+
+Set `device.frame` to one of four modes:
+
+- `raw`: place the screenshot without clipping or a frame
+- `rounded`: clip the screenshot to rounded corners
+- `generic`: add a neutral device frame with no manufacturer-specific details
+- `asset`: composite the screenshot behind a transparent PNG supplied by the user
+
+Each output can override the theme's device settings:
+
+```yaml
+outputs:
+  - name: app-store
+    preset: app-store-iphone-6.9
+    directory: ./output/app-store
+    device:
+      frame: generic
+
+  - name: google-play
+    preset: google-play-phone-portrait
+    directory: ./output/google-play
+    device:
+      frame: rounded
+```
+
+### Use an external frame asset
+
+The PNG should have a transparent screen opening. `screen_rect` specifies `[left, top, width, height]` in pixels within the original frame image.
+
+```yaml
+device:
+  frame: asset
+  frame_asset: ./frames/device-frame.png
+  screen_rect: [72, 68, 1176, 2548]
+```
+
+Frame artwork is not bundled. Obtain it through an authorized source and verify the license and intended use before using Apple, Google, or manufacturer artwork.
+
+### Tune the shadow
+
+```yaml
+device:
+  shadow:
+    enabled: true
+    opacity: 62
+    blur_ratio: 0.032
+    offset_y_ratio: 0.016
+    padding_ratio: 0.045
+```

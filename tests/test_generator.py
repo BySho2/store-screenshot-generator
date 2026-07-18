@@ -19,6 +19,59 @@ class GeneratorTests(unittest.TestCase):
         self.assertLessEqual(resized.width, 800)
         self.assertLessEqual(resized.height, 800)
 
+    def test_rounded_and_generic_frames_are_transparent_at_outer_corners(self):
+        image = Image.new("RGBA", (390, 844), "white")
+        rounded = generate.render_device(image, {"frame": "rounded", "corner_radius_ratio": 0.08}, Path.cwd())
+        generic = generate.render_device(image, {"frame": "generic"}, Path.cwd())
+        self.assertEqual(rounded.getpixel((0, 0))[3], 0)
+        self.assertEqual(generic.getpixel((0, 0))[3], 0)
+        self.assertGreater(generic.width, image.width)
+
+    def test_shadow_can_be_disabled_without_changing_size(self):
+        image = Image.new("RGBA", (390, 844), "white")
+        rendered = generate.add_shadow(image, {"enabled": False})
+        self.assertEqual(rendered.size, image.size)
+
+    def test_external_frame_places_screenshot_behind_asset(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            frame = Image.new("RGBA", (120, 240), (0, 0, 0, 0))
+            ImageDraw.Draw(frame).rectangle((0, 0, 119, 239), outline="black", width=10)
+            frame.save(root / "frame.png")
+            source = Image.new("RGBA", (100, 200), "#2563EB")
+            result = generate.render_device(
+                source,
+                {"frame": "asset", "frame_asset": "frame.png", "screen_rect": [10, 10, 100, 220]},
+                root,
+            )
+            self.assertEqual(result.size, (120, 240))
+            self.assertEqual(result.getpixel((60, 120))[:3], (37, 99, 235))
+            self.assertEqual(result.getpixel((0, 0))[:3], (0, 0, 0))
+
+    def test_output_device_override_preserves_nested_shadow_defaults(self):
+        theme = {
+            "device": {
+                "frame": "rounded",
+                "max_width_ratio": 0.8,
+                "max_height_ratio": 0.6,
+                "shadow": {"enabled": True, "opacity": 72, "blur_ratio": 0.03},
+            }
+        }
+        merged = generate.merged_device_settings(theme, {"shadow": {"enabled": False}})
+        self.assertFalse(merged["shadow"]["enabled"])
+        self.assertEqual(merged["shadow"]["opacity"], 72)
+
+    def test_asset_frame_is_validated_before_generation(self):
+        device = {
+            "frame": "asset",
+            "frame_asset": "missing.png",
+            "screen_rect": [10, 10, 100, 200],
+            "max_width_ratio": 0.8,
+            "max_height_ratio": 0.6,
+        }
+        with self.assertRaisesRegex(generate.ConfigError, "Device frame asset not found"):
+            generate.validate_device_settings(device, Path.cwd())
+
     def test_apple_and_google_play_presets(self):
         self.assertEqual(generate.PRESETS["app-store-iphone-6.9"], (1320, 2868))
         self.assertEqual(generate.PRESETS["google-play-phone-portrait"], (1080, 1920))

@@ -14,8 +14,9 @@
 4. 見出しと説明文を読みやすい位置へ配置する
 5. 文章が表示領域に収まるように、自動で改行と文字サイズを調整する
 6. スクリーンショットを縦横比を保ったまま、表示領域に収まる大きさへ調整する
-7. 背景パネル、影、スクリーンショット、アプリ名を一枚の画像に合成する
-8. 日本語版と英語版を、ストアごとのフォルダへPNG形式で出力する
+7. 選択した表示方式に応じて、スクリーンショットへ角丸、汎用端末枠、外部フレーム素材を適用する
+8. 必要に応じて背景パネルや影を加え、すべての要素を一枚の画像に合成する
+9. 日本語版と英語版を、ストアごとのフォルダへPNG形式で出力する
 
 一度の実行で、次の画像を生成します。
 
@@ -52,8 +53,9 @@ This tool combines screenshots of your app with headlines, supporting copy, and 
 4. Position the headline and supporting copy.
 5. Wrap and resize the text so it fits within the available area.
 6. Scale each screenshot to fit while preserving its aspect ratio.
-7. Composite the panel, shadow, screenshot, and app name.
-8. Export Japanese and English RGB PNG files into separate folders for each store.
+7. Apply rounded corners, a neutral device frame, or an external frame asset according to the selected mode.
+8. Composite optional panel and shadow styling with the remaining elements.
+9. Export Japanese and English RGB PNG files into separate folders for each store.
 
 One run produces the following outputs:
 

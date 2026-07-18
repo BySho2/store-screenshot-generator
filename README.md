@@ -82,6 +82,8 @@ AIエージェントは[共通Skillの手順](skills/store-listing-screenshots/S
 - Google Play向け：スマートフォン縦向き（`1080 x 1920`）
 - Apple／Google Play向け画像の一括生成
 - YAMLによる見出し、説明文、入力画像、デザインの設定
+- 枠なし、角丸、汎用端末フレーム、外部フレーム素材の選択
+- ストアごとに異なる端末表示の設定
 - 日本語と英語の自動改行・文字サイズ調整
 - PNG、JPEG、WebP形式の入力
 - アルファチャンネルを含まないRGB PNG形式での出力
@@ -160,11 +162,12 @@ slides:
 
 次のテーマが付属しています。
 
+- `themes/modern-gradient.yaml`（標準・推奨）
 - `themes/premium-navy.yaml`
 - `themes/minimal-light.yaml`
 - `themes/sunny-yellow.yaml`
 
-背景色、文字色、文字サイズ、アクセントカラー、スクリーンショットの大きさ、影などをYAMLで変更できます。詳しくは[テーマのカスタマイズ方法](docs/custom-themes.md)をご覧ください。
+背景色、文字色、文字サイズ、アクセントカラー、スクリーンショットの大きさ、角丸、枠、影などをYAMLで変更できます。白い背景パネルと影は個別に無効化できます。詳しくは[テーマのカスタマイズ方法](docs/custom-themes.md)をご覧ください。
 
 ## 画像生成の仕組み
 

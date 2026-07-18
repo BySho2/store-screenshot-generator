@@ -13,6 +13,9 @@
 - all expected store, locale, and slide combinations exist
 - no clipped headline, body, footer, or screenshot
 - screenshot aspect ratio is preserved
+- panel, border, and shadow are intentional rather than default visual clutter
+- device frame matches the intended store or promotional use and does not obscure app UI
+- external device artwork is authorized for the intended use
 - sufficient contrast and readable text size
 - consistent spacing, hierarchy, colors, and screenshot scale
 - copy accurately describes the displayed screen
