@@ -47,6 +47,13 @@ class SkillPackageTests(unittest.TestCase):
         config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
         self.assertEqual(len(config["slides"]), 3)
         self.assertEqual({output["name"] for output in config["outputs"]}, {"app-store", "google-play"})
+        outputs = {output["name"]: output for output in config["outputs"]}
+        self.assertEqual(outputs["app-store"]["device"]["frame"], "generic")
+        self.assertEqual(outputs["google-play"]["device"]["frame"], "generic")
+        self.assertGreater(
+            outputs["app-store"]["device"]["corner_radius_ratio"],
+            outputs["google-play"]["device"]["corner_radius_ratio"],
+        )
         for slide in config["slides"]:
             self.assertTrue((config_path.parent / slide["screenshot"]).is_file())
         self.assertTrue((config_path.parent / config["theme"]).is_file())

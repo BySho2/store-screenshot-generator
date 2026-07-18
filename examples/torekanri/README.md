@@ -4,6 +4,10 @@
 
 This example generates App Store and Google Play listing images from screenshots of the real Torekanri app.
 
+この例では端末枠と出力サイズの違いを比較しやすくするため、同じiPhoneスクリーンショットを両ストア向けに使用しています。実際にiOS版とAndroid版で画面が異なるアプリでは、各プラットフォームで撮影したスクリーンショットを別々の設定で生成してください。
+
+For an easy comparison of frame styling and output sizes, this example uses the same iPhone screenshots for both stores. If the iOS and Android versions of an app differ, generate each store set from platform-specific captures and separate configurations.
+
 ## 生成する / Generate
 
 リポジトリのルートディレクトリで実行します。
