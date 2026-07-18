@@ -197,6 +197,12 @@ python skills/store-listing-screenshots/scripts/validate_outputs.py \
 - [Apple公式スクリーンショット仕様](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/)
 - [Google Play公式プレビュー素材要件](https://support.google.com/googleplay/android-developer/answer/9866151)
 
+## Google Play公開準備のサポート
+
+このツールを公開しているBySho²では、個人開発者向けに[Androidアプリ公開に必要なGoogle Playクローズドテストの代行サービス](https://bysho2.com/google-play-closed-test)を提供しています。
+
+テスター12人の参加、14日間の進行管理、完了報告までをまとめて依頼できます。ストア掲載画像を用意した後、クローズドテストのテスター確保や継続運用にお困りの場合にご利用ください。
+
 ## ライセンス
 
 このプロジェクトは[MIT License](LICENSE)で公開しています。ライセンスの条件に従って、商用・非商用を問わず利用、改変、再配布できます。

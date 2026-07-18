@@ -177,6 +177,12 @@ Store requirements can change. Check the latest official specifications before u
 - [Apple screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/)
 - [Google Play preview asset requirements](https://support.google.com/googleplay/android-developer/answer/9866151)
 
+## Support for Google Play Publication
+
+BySho², the maintainer of this project, offers a [Google Play closed testing service for independent Android developers](https://bysho2.com/google-play-closed-test).
+
+The service covers participation by 12 testers, 14 days of progress management, and a completion report. The service page and support are currently provided in Japanese.
+
 ## License
 
 This project is available under the [MIT License](LICENSE). You may use, modify, and redistribute it for commercial or non-commercial purposes under the license terms.
