@@ -98,8 +98,9 @@ Read `SKILL_DIR/references/copy-guidelines.md`.
 - Keep App Store and Google Play outputs enabled unless the user requests only one store.
 - Prefer `modern-gradient.yaml` as the starting point unless the app's existing brand clearly calls for another theme.
 - Do not add a large background panel by default. Use `panel.enabled: false` unless the panel materially improves contrast.
-- Use `device.frame: rounded` as the safe general default. A neutral `generic` frame may be used when it improves the presentation without implying a specific manufacturer.
-- Configure App Store and Google Play device presentation separately in each output when appropriate. Prefer a plain rounded screenshot for Google Play listing output.
+- Use a neutral `generic` frame as the default when a device silhouette improves the presentation without implying a specific manufacturer. Use `rounded` when the user requests no visible bezel.
+- Configure App Store and Google Play device presentation separately. For iPhone captures, use a stronger neutral corner radius such as `corner_radius_ratio: 0.105`; for Android captures, start around `0.065`. Confirm both visually against the source screenshot rather than inferring the platform from the output filename alone.
+- When the app has distinct iOS and Android interfaces, do not reuse an iOS capture for Google Play or an Android capture for the App Store. Create separate run configurations and output directories for the platform-specific source screenshots.
 - Use `device.frame: asset` only with a frame image the user is authorized to use. Do not download or redistribute Apple, Google, or manufacturer artwork without confirming its terms.
 - Never overwrite the user's existing configuration without explicit intent. Use a new run directory by default.
 

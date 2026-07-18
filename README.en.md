@@ -149,6 +149,8 @@ Four themes are included:
 
 You can change background colors, typography, accent colors, screenshot size, corner treatment, frames, and shadows in YAML. The background panel and shadow can be disabled independently. See [Custom Themes](docs/custom-themes.md).
 
+The included configuration uses a black neutral device frame for both stores, with a stronger corner radius for App Store output and a slightly squarer shape for Google Play output.
+
 ## How Images Are Generated
 
 See [How It Works](docs/how-it-works.md) for the complete pipeline from an app screenshot to store listing images.

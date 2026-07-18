@@ -54,7 +54,7 @@ device:
 - `generic`：特定メーカーを表現しない汎用端末枠へ入れる
 - `asset`：利用者が用意した透過PNGフレームへ入れる
 
-標準のモダンテーマは`rounded`です。ストアごとに表示方式を変える場合は、`config.yaml`の各出力へ上書きを追加します。
+モダンテーマ単体の既定値は`rounded`ですが、付属の設定テンプレートでは両ストアに黒い汎用端末枠を使用し、iPhone向けをAndroid向けより丸くしています。ストアごとに表示方式を変える場合は、`config.yaml`の各出力へ上書きを追加します。
 
 ```yaml
 outputs:
@@ -63,12 +63,16 @@ outputs:
     directory: ./output/app-store
     device:
       frame: generic
+      corner_radius_ratio: 0.105
+      bezel_ratio: 0.022
 
   - name: google-play
     preset: google-play-phone-portrait
     directory: ./output/google-play
     device:
-      frame: rounded
+      frame: generic
+      corner_radius_ratio: 0.065
+      bezel_ratio: 0.022
 ```
 
 ### 外部フレーム素材を使う
@@ -137,6 +141,8 @@ Set `device.frame` to one of four modes:
 
 Each output can override the theme's device settings:
 
+The modern theme itself defaults to `rounded`. The included configuration template overrides both stores to a black neutral device frame and gives the iPhone output a stronger corner radius than the Android output:
+
 ```yaml
 outputs:
   - name: app-store
@@ -144,12 +150,16 @@ outputs:
     directory: ./output/app-store
     device:
       frame: generic
+      corner_radius_ratio: 0.105
+      bezel_ratio: 0.022
 
   - name: google-play
     preset: google-play-phone-portrait
     directory: ./output/google-play
     device:
-      frame: rounded
+      frame: generic
+      corner_radius_ratio: 0.065
+      bezel_ratio: 0.022
 ```
 
 ### Use an external frame asset

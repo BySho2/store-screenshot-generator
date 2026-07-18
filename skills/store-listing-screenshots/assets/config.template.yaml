@@ -14,13 +14,17 @@ outputs:
     filename: screenshot_{locale}_{index:02d}.png
     device:
       frame: generic
+      corner_radius_ratio: 0.105
+      bezel_ratio: 0.022
 
   - name: google-play
     preset: google-play-phone-portrait
     directory: ./generated/google-play
     filename: screenshot_{locale}_{index:02d}.png
     device:
-      frame: rounded
+      frame: generic
+      corner_radius_ratio: 0.065
+      bezel_ratio: 0.022
 
 theme: ./theme.yaml
 
