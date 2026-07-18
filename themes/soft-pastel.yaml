@@ -1,0 +1,55 @@
+name: Soft Pastel
+background:
+  type: gradient
+  colors:
+    - "#FFF8FC"
+    - "#F4EEFF"
+    - "#EAF6FF"
+  glows:
+    - color: "#F9A8D4"
+      opacity: 62
+      x: 0.86
+      y: 0.08
+      size: 0.82
+      blur: 0.13
+    - color: "#A5B4FC"
+      opacity: 54
+      x: 0.08
+      y: 0.58
+      size: 0.72
+      blur: 0.14
+headline:
+  color: "#312E4F"
+  max_size: 108
+  min_size: 56
+  max_lines: 3
+body:
+  color: "#625F7B"
+  max_size: 38
+  min_size: 23
+accent:
+  enabled: true
+  color: "#A855F7"
+device:
+  max_width_ratio: 0.84
+  max_height_ratio: 0.61
+  frame: rounded
+  corner_radius_ratio: 0.07
+  border_ratio: 0.003
+  border_color: "#FFFFFF"
+  shadow:
+    enabled: true
+    opacity: 48
+    blur_ratio: 0.036
+    offset_y_ratio: 0.014
+    padding_ratio: 0.05
+panel:
+  enabled: true
+  color: "#FFFFFF"
+  opacity: 72
+  outline_width: 2
+  outline_color: "#FFFFFF"
+  outline_opacity: 120
+footer:
+  enabled: false
+

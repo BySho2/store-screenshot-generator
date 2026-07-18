@@ -138,16 +138,38 @@ app:
     en: Sample App
 ```
 
-## Customize the Design
+## Choose a Design Theme
 
-Four themes are included:
+Compare six themes generated from the same screenshot, then select the YAML that best fits your app. Each theme can be used as-is or adjusted to match your brand colors.
 
-- `themes/modern-gradient.yaml` (recommended default)
-- `themes/premium-navy.yaml`
-- `themes/minimal-light.yaml`
-- `themes/sunny-yellow.yaml`
+<table>
+  <tr>
+    <td width="50%" align="center"><strong>Modern Gradient</strong><br>Versatile recommended default<br><img src="examples/theme-gallery/modern-gradient.png" width="82%" alt="Modern Gradient theme sample"><br><a href="themes/modern-gradient.yaml">View YAML</a></td>
+    <td width="50%" align="center"><strong>Minimal Light</strong><br>Clean theme for productivity apps<br><img src="examples/theme-gallery/minimal-light.png" width="82%" alt="Minimal Light theme sample"><br><a href="themes/minimal-light.yaml">View YAML</a></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><strong>Premium Navy</strong><br>Refined theme for finance and business apps<br><img src="examples/theme-gallery/premium-navy.png" width="82%" alt="Premium Navy theme sample"><br><a href="themes/premium-navy.yaml">View YAML</a></td>
+    <td width="50%" align="center"><strong>Sunny Yellow</strong><br>Friendly theme for everyday apps<br><img src="examples/theme-gallery/sunny-yellow.png" width="82%" alt="Sunny Yellow theme sample"><br><a href="themes/sunny-yellow.yaml">View YAML</a></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><strong>Dark Neon</strong><br>Dark theme for developer and technology apps<br><img src="examples/theme-gallery/dark-neon.png" width="82%" alt="Dark Neon theme sample"><br><a href="themes/dark-neon.yaml">View YAML</a></td>
+    <td width="50%" align="center"><strong>Soft Pastel</strong><br>Gentle theme for lifestyle apps<br><img src="examples/theme-gallery/soft-pastel.png" width="82%" alt="Soft Pastel theme sample"><br><a href="themes/soft-pastel.yaml">View YAML</a></td>
+  </tr>
+</table>
 
-You can change background colors, typography, accent colors, screenshot size, corner treatment, frames, and shadows in YAML. The background panel and shadow can be disabled independently. See [Custom Themes](docs/custom-themes.md).
+Change the selected theme by editing the `theme` path in `config.yaml`.
+
+```yaml
+theme: ./themes/soft-pastel.yaml
+```
+
+You can also customize background colors, typography, accent colors, screenshot size, corner treatment, frames, and shadows in YAML. The background panel and shadow can be disabled independently. See [Custom Themes](docs/custom-themes.md).
+
+Regenerate the gallery with:
+
+```bash
+python examples/generate_theme_gallery.py
+```
 
 The included configuration uses a black neutral device frame for both stores, with a stronger corner radius for App Store output and a slightly squarer shape for Google Play output.
 

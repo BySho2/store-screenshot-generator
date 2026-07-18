@@ -6,6 +6,15 @@
 
 付属テーマをコピーし、YAMLの値を変更すると、Pythonコードを書き換えずにデザインを変更できます。
 
+READMEの[テーマギャラリー](../README.md#デザインテーマを選ぶ)では、同じスクリーンショットから生成した6テーマを比較できます。
+
+- `modern-gradient.yaml`：幅広いアプリ向けの標準テーマ
+- `minimal-light.yaml`：業務・管理系向けの明るいテーマ
+- `premium-navy.yaml`：金融・ビジネス系向けの落ち着いたテーマ
+- `sunny-yellow.yaml`：生活・カジュアル系向けの明るいテーマ
+- `dark-neon.yaml`：開発者・テック系向けのダークテーマ
+- `soft-pastel.yaml`：ライフスタイル系向けの柔らかなテーマ
+
 ```bash
 cp themes/modern-gradient.yaml themes/my-brand.yaml
 ```
@@ -103,6 +112,15 @@ device:
 ## English
 
 Copy an included theme and edit its YAML values to customize the design without changing the Python source.
+
+See the [theme gallery](../README.en.md#choose-a-design-theme) to compare six themes generated from the same screenshot.
+
+- `modern-gradient.yaml`: versatile recommended default
+- `minimal-light.yaml`: clean theme for productivity apps
+- `premium-navy.yaml`: refined theme for finance and business apps
+- `sunny-yellow.yaml`: friendly theme for everyday apps
+- `dark-neon.yaml`: dark theme for developer and technology apps
+- `soft-pastel.yaml`: gentle theme for lifestyle apps
 
 ```bash
 cp themes/modern-gradient.yaml themes/my-brand.yaml

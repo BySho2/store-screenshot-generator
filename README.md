@@ -158,16 +158,38 @@ slides:
         body: "See the information you need at a glance."
 ```
 
-## デザインを変更する
+## デザインテーマを選ぶ
 
-次のテーマが付属しています。
+同じスクリーンショットから生成した6種類のサンプルを見比べて、用途に合うテーマを選べます。各画像の下にあるYAMLを、そのまま利用したりブランドカラーに合わせて編集したりできます。
 
-- `themes/modern-gradient.yaml`（標準・推奨）
-- `themes/premium-navy.yaml`
-- `themes/minimal-light.yaml`
-- `themes/sunny-yellow.yaml`
+<table>
+  <tr>
+    <td width="50%" align="center"><strong>Modern Gradient</strong><br>幅広いアプリに合う標準テーマ<br><img src="examples/theme-gallery/modern-gradient.png" width="82%" alt="Modern Gradientテーマの生成例"><br><a href="themes/modern-gradient.yaml">YAMLを見る</a></td>
+    <td width="50%" align="center"><strong>Minimal Light</strong><br>業務・管理系アプリに合う明るいテーマ<br><img src="examples/theme-gallery/minimal-light.png" width="82%" alt="Minimal Lightテーマの生成例"><br><a href="themes/minimal-light.yaml">YAMLを見る</a></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><strong>Premium Navy</strong><br>金融・ビジネス系に合う落ち着いたテーマ<br><img src="examples/theme-gallery/premium-navy.png" width="82%" alt="Premium Navyテーマの生成例"><br><a href="themes/premium-navy.yaml">YAMLを見る</a></td>
+    <td width="50%" align="center"><strong>Sunny Yellow</strong><br>生活・カジュアル系に合う明るいテーマ<br><img src="examples/theme-gallery/sunny-yellow.png" width="82%" alt="Sunny Yellowテーマの生成例"><br><a href="themes/sunny-yellow.yaml">YAMLを見る</a></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><strong>Dark Neon</strong><br>開発者・テック系に合うダークテーマ<br><img src="examples/theme-gallery/dark-neon.png" width="82%" alt="Dark Neonテーマの生成例"><br><a href="themes/dark-neon.yaml">YAMLを見る</a></td>
+    <td width="50%" align="center"><strong>Soft Pastel</strong><br>ライフスタイル系に合う柔らかなテーマ<br><img src="examples/theme-gallery/soft-pastel.png" width="82%" alt="Soft Pastelテーマの生成例"><br><a href="themes/soft-pastel.yaml">YAMLを見る</a></td>
+  </tr>
+</table>
 
-背景色、文字色、文字サイズ、アクセントカラー、スクリーンショットの大きさ、角丸、枠、影などをYAMLで変更できます。白い背景パネルと影は個別に無効化できます。詳しくは[テーマのカスタマイズ方法](docs/custom-themes.md)をご覧ください。
+使用するテーマは、`config.yaml`の`theme`を書き換えるだけで変更できます。
+
+```yaml
+theme: ./themes/soft-pastel.yaml
+```
+
+背景色、文字色、文字サイズ、アクセントカラー、スクリーンショットの大きさ、角丸、枠、影などもYAMLで変更できます。白い背景パネルと影は個別に無効化できます。詳しくは[テーマのカスタマイズ方法](docs/custom-themes.md)をご覧ください。
+
+テーマギャラリーを再生成する場合は、次のコマンドを実行します。
+
+```bash
+python examples/generate_theme_gallery.py
+```
 
 付属の設定例では両ストアに黒い汎用端末枠を使用し、App Store向けをより丸く、Google Play向けを少し角の立った形に設定しています。
 
