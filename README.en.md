@@ -14,7 +14,7 @@ The generator combines each app screenshot with localized headlines, supporting 
 
 ## Use with an AI Agent
 
-This repository includes a self-contained Agent Skill for both Codex and Claude Code. It guides app inspection, screen selection, capture from an iOS Simulator or Android emulator, Japanese and English copywriting, image generation, and final QA.
+This repository includes a self-contained Agent Skill for both Codex and Claude Code. It guides benefit discovery, screenshot evaluation and selection, capture from an iOS Simulator or Android emulator, Japanese and English copywriting, design comparison, image generation, and final QA.
 
 ### Install
 
@@ -60,6 +60,8 @@ The agent follows the [shared Skill workflow](skills/store-listing-screenshots/S
 
 If login, signing, hardware-only features, or another dependency prevents automated capture, the workflow switches to screenshots supplied by the user. The Skill generates listing images; it does not upload or publish them through App Store Connect or Google Play Console.
 
+The workflow stores its plan and progress in `store-listing-assets` inside the target app. Benefit-to-screen pairing, screenshot ratings, theme selection, and phase status remain portable between Codex and Claude Code. Before the full run, the agent compares the first slide in three themes; after generation, it creates contact sheets for visual QA by store and locale.
+
 ## Generated Example
 
 See [examples/torekanri](examples/torekanri) for store listing images generated from screenshots of the real Torekanri app.
@@ -77,7 +79,7 @@ See [examples/torekanri](examples/torekanri) for store listing images generated 
 ## Supported Output
 
 - Japanese and English
-- App Store: iPhone 6.9-inch portrait (`1320 x 2868`)
+- App Store: iPhone 6.5-, 6.7-, and 6.9-inch portrait (`1242 x 2688`, `1290 x 2796`, and `1320 x 2868`)
 - Google Play: phone portrait (`1080 x 1920`)
 - Apple and Google Play outputs generated in one run
 - YAML configuration for copy, source screenshots, and visual themes
@@ -87,6 +89,7 @@ See [examples/torekanri](examples/torekanri) for store listing images generated 
 - PNG, JPEG, and WebP source images
 - RGB PNG output without alpha channels
 - Protection against accidental overwrites
+- File-based resumability, three-theme comparison, and QA contact sheets
 
 ## Generate the Sample
 

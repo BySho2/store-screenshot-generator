@@ -74,6 +74,8 @@ class GeneratorTests(unittest.TestCase):
 
     def test_apple_and_google_play_presets(self):
         self.assertEqual(generate.PRESETS["app-store-iphone-6.9"], (1320, 2868))
+        self.assertEqual(generate.PRESETS["app-store-iphone-6.7"], (1290, 2796))
+        self.assertEqual(generate.PRESETS["app-store-iphone-6.5"], (1242, 2688))
         self.assertEqual(generate.PRESETS["google-play-phone-portrait"], (1080, 1920))
 
     def test_japanese_text_wraps_without_spaces(self):

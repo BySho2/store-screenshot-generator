@@ -23,6 +23,8 @@
 | ストア | 用途 | 出力サイズ |
 |---|---|---:|
 | App Store | iPhone 6.9インチ・縦向き | `1320 x 2868` |
+| App Store | iPhone 6.7インチ・縦向き | `1290 x 2796` |
+| App Store | iPhone 6.5インチ・縦向き | `1242 x 2688` |
 | Google Play | スマートフォン・縦向き | `1080 x 1920` |
 
 ### 用意するもの
@@ -62,6 +64,8 @@ One run produces the following outputs:
 | Store | Target | Output size |
 |---|---|---:|
 | App Store | iPhone 6.9-inch portrait | `1320 x 2868` |
+| App Store | iPhone 6.7-inch portrait | `1290 x 2796` |
+| App Store | iPhone 6.5-inch portrait | `1242 x 2688` |
 | Google Play | Phone portrait | `1080 x 1920` |
 
 ### What You Need
