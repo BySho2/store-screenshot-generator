@@ -14,7 +14,7 @@
 
 ## AIエージェントで使う
 
-このリポジトリには、CodexとClaude Codeの両方で利用できる自己完結型のAgent Skillが含まれています。アプリの調査、撮影画面の選定、iOS Simulator／Android Emulatorからの撮影、日本語・英語コピーの作成、画像生成、最終確認までを一つのワークフローとして進めます。
+このリポジトリには、CodexとClaude Codeの両方で利用できる自己完結型のAgent Skillが含まれています。アプリの訴求整理、撮影画面の評価・選定、iOS Simulator／Android Emulatorからの撮影、日本語・英語コピーの作成、デザイン比較、画像生成、最終確認までを一つのワークフローとして進めます。
 
 ### インストール
 
@@ -61,6 +61,8 @@ AIエージェントは[共通Skillの手順](skills/store-listing-screenshots/S
 
 ログイン、署名、実機専用機能などにより自動撮影できない場合は、利用者が用意したスクリーンショットから生成する方式へ切り替えます。このSkillは掲載画像を生成しますが、App Store ConnectやGoogle Play Consoleへのアップロード・公開は行いません。
 
+作業内容は対象アプリ内の`store-listing-assets`に保存されます。訴求と画面の対応、スクリーンショットの評価、選んだテーマ、進行状況がファイルに残るため、CodexとClaude Codeのどちらでも途中から再開できます。最初の1枚を3テーマで比較してから全画像を生成し、最後にストア・言語ごとのコンタクトシートで見た目を確認します。
+
 ## 生成例
 
 実際のアプリ「トレカンリ」のスクリーンショットから生成した例を、[examples/torekanri](examples/torekanri)に掲載しています。
@@ -78,7 +80,7 @@ AIエージェントは[共通Skillの手順](skills/store-listing-screenshots/S
 ## 対応内容
 
 - 日本語・英語
-- App Store向け：iPhone 6.9インチ縦向き（`1320 x 2868`）
+- App Store向け：iPhone 6.5／6.7／6.9インチ縦向き（`1242 x 2688`／`1290 x 2796`／`1320 x 2868`）
 - Google Play向け：スマートフォン縦向き（`1080 x 1920`）
 - Apple／Google Play向け画像の一括生成
 - YAMLによる見出し、説明文、入力画像、デザインの設定
@@ -88,6 +90,7 @@ AIエージェントは[共通Skillの手順](skills/store-listing-screenshots/S
 - PNG、JPEG、WebP形式の入力
 - アルファチャンネルを含まないRGB PNG形式での出力
 - 既存ファイルの意図しない上書き防止
+- ファイルベースの進行状況保存、3テーマ比較、QA用コンタクトシート
 
 ## まずサンプルを生成する
 

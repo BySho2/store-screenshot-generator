@@ -13,6 +13,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 PRESETS = {
     "app-store-iphone-6.9": (1320, 2868),
+    "app-store-iphone-6.7": (1290, 2796),
     "app-store-iphone-6.5": (1242, 2688),
     "google-play-phone-portrait": (1080, 1920),
 }

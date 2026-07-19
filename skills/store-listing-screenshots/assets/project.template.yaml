@@ -1,0 +1,33 @@
+schema_version: 1
+
+app:
+  name: ""
+  platforms: []
+  target_audience: ""
+  primary_value: ""
+
+status:
+  phase: planning
+  updated_at: null
+
+benefits: []
+
+screens: []
+
+design:
+  candidate_themes: []
+  selected_theme: null
+
+outputs:
+  app_store:
+    preset: app-store-iphone-6.9
+    locales: [ja, en]
+  google_play:
+    preset: google-play-phone-portrait
+    locales: [ja, en]
+
+generated: []
+
+qa:
+  deterministic: pending
+  visual: pending
